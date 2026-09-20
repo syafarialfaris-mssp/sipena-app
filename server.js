@@ -18,14 +18,13 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Fungsi bantuan untuk upload Base64 ke Cloudinary
 async function uploadToCloudinary(base64Data, folderName) {
     if (!base64Data) return null;
-    if (base64Data.startsWith('http')) return base64Data; // Jika sudah URL, biarkan
+    if (base64Data.startsWith('http')) return base64Data; 
     try {
         const res = await cloudinary.uploader.upload(base64Data, {
             folder: `sipena/${folderName}`,
-            resource_type: 'auto' // Otomatis deteksi gambar/PDF
+            resource_type: 'auto' 
         });
         return res.secure_url;
     } catch (err) {
@@ -57,7 +56,7 @@ app.use(async (req, res, next) => {
 });
 
 // ==========================================
-// 3. SCHEMA MONGODB (STRUKTUR DATA)
+// 3. SCHEMA MONGODB (MENCEGAH OVERWRITE ERROR DI VERCEL)
 // ==========================================
 const transform = (doc, ret) => { ret.id = ret._id; delete ret._id; delete ret.__v; return ret; };
 
@@ -71,7 +70,8 @@ const SystemSchema = new mongoose.Schema({
     adminAvatar: { type: String, default: '' }, kelas: [String], mapel: [String]
 });
 SystemSchema.set('toJSON', { transform });
-const System = mongoose.model('System', SystemSchema);
+// PERBAIKAN: Gunakan mongoose.models sebelum model baru
+const System = mongoose.models.System || mongoose.model('System', SystemSchema);
 
 const PegawaiSchema = new mongoose.Schema({
     email: String, password: { type: String, default: "123" }, role: { type: String, default: "guru" },
@@ -79,13 +79,13 @@ const PegawaiSchema = new mongoose.Schema({
     mengajar: [{ kelas: String, mapel: String }]
 });
 PegawaiSchema.set('toJSON', { transform });
-const Pegawai = mongoose.model('Pegawai', PegawaiSchema);
+const Pegawai = mongoose.models.Pegawai || mongoose.model('Pegawai', PegawaiSchema);
 
 const SiswaSchema = new mongoose.Schema({
     nisn: { type: String, unique: true }, nama_siswa: String, jk: String, kelas: String, no_hp_ortu: String, avatar: { type: String, default: "" }
 });
 SiswaSchema.set('toJSON', { transform });
-const Siswa = mongoose.model('Siswa', SiswaSchema);
+const Siswa = mongoose.models.Siswa || mongoose.model('Siswa', SiswaSchema);
 
 const NilaiSchema = new mongoose.Schema({
     nisn: String, nama_siswa: String, nama_guru: String, mapel: String, kelas: String,
@@ -101,7 +101,7 @@ const NilaiSchema = new mongoose.Schema({
     catatan_rem3: String, lampiran_link_rem3: String, lampiran_file_rem3: String,
 });
 NilaiSchema.set('toJSON', { transform });
-const Nilai = mongoose.model('Nilai', NilaiSchema);
+const Nilai = mongoose.models.Nilai || mongoose.model('Nilai', NilaiSchema);
 
 // Inisialisasi Data Default
 const initDB = async () => {
