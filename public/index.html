@@ -340,19 +340,67 @@
 
                         <label><b>Pilihan Katalog Warna Tema (Klik Untuk Mengganti):</b></label>
                         <div class="theme-grid-new">
-                            <div class="theme-card" id="cardTheme_default" onclick="setTemaGlobal('default')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #3b82f6;"></span><span class="tc-title">Classic Slate Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #f4f7fe;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #4318ff;"></span><span class="color-circle" style="background: #111c44;"></span></div>
-                            </div>
-                            <div class="theme-card" id="cardTheme_emerald" onclick="setTemaGlobal('emerald')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #10b981;"></span><span class="tc-title">Emerald Oasis</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #ecfdf5;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #10b981;"></span><span class="color-circle" style="background: #064e3b;"></span></div>
-                            </div>
-                            <div class="theme-card" id="cardTheme_rose" onclick="setTemaGlobal('rose')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #e11d48;"></span><span class="tc-title">Classroom Rose</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #ffe4e6;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #e11d48;"></span><span class="color-circle" style="background: #881337;"></span></div>
-                            </div>
-                        </div>
+    <!-- 1. Default -->
+    <div class="theme-card" id="cardTheme_default" onclick="setTemaGlobal('default')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #4318ff;"></span><span class="tc-title">Classic Slate Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #f4f7fe;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #4318ff;"></span><span class="color-circle" style="background: #111c44;"></span></div>
+    </div>
+    <!-- 2. Emerald -->
+    <div class="theme-card" id="cardTheme_emerald" onclick="setTemaGlobal('emerald')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #10b981;"></span><span class="tc-title">Emerald Oasis</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #ecfdf5;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #10b981;"></span><span class="color-circle" style="background: #064e3b;"></span></div>
+    </div>
+    <!-- 3. Rose -->
+    <div class="theme-card" id="cardTheme_rose" onclick="setTemaGlobal('rose')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #e11d48;"></span><span class="tc-title">Classroom Rose</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #ffe4e6;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #e11d48;"></span><span class="color-circle" style="background: #881337;"></span></div>
+    </div>
+    <!-- 4. Golden -->
+    <div class="theme-card" id="cardTheme_golden" onclick="setTemaGlobal('golden')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #d97706;"></span><span class="tc-title">Golden Amber</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #fef3c7;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #d97706;"></span><span class="color-circle" style="background: #3e2723;"></span></div>
+    </div>
+    <!-- 5. Oceanic -->
+    <div class="theme-card" id="cardTheme_oceanic" onclick="setTemaGlobal('oceanic')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #06b6d4;"></span><span class="tc-title">Oceanic Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #e0f2fe;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #06b6d4;"></span><span class="color-circle" style="background: #0f172a;"></span></div>
+    </div>
+    <!-- 6. Lavender -->
+    <div class="theme-card" id="cardTheme_lavender" onclick="setTemaGlobal('lavender')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #8b5cf6;"></span><span class="tc-title">Royal Lavender</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #f5f3ff;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #8b5cf6;"></span><span class="color-circle" style="background: #4c1d95;"></span></div>
+    </div>
+    <!-- 7. Teal -->
+    <div class="theme-card" id="cardTheme_teal" onclick="setTemaGlobal('teal')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #14b8a6;"></span><span class="tc-title">Teal Tranquility</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #ccfbf1;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #14b8a6;"></span><span class="color-circle" style="background: #115e59;"></span></div>
+    </div>
+    <!-- 8. Minimalist -->
+    <div class="theme-card" id="cardTheme_minimalist" onclick="setTemaGlobal('minimalist')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #64748b;"></span><span class="tc-title">Clean Minimalist</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #64748b;"></span><span class="color-circle" style="background: #334155;"></span></div>
+    </div>
+    <!-- 9. Nordic -->
+    <div class="theme-card" id="cardTheme_nordic" onclick="setTemaGlobal('nordic')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #3b82f6;"></span><span class="tc-title">Nordic Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #e0e7ff;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #3b82f6;"></span><span class="color-circle" style="background: #1e3a8a;"></span></div>
+    </div>
+    <!-- 10. Sunset -->
+    <div class="theme-card" id="cardTheme_sunset" onclick="setTemaGlobal('sunset')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #ea580c;"></span><span class="tc-title">Warm Sunset</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #ffedd5;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #ea580c;"></span><span class="color-circle" style="background: #431407;"></span></div>
+    </div>
+    <!-- 11. Kemenag -->
+    <div class="theme-card" id="cardTheme_kemenag" onclick="setTemaGlobal('kemenag')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #d4af37;"></span><span class="tc-title">Hijau Kemenag</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #d4af37;"></span><span class="color-circle" style="background: #065f46;"></span></div>
+    </div>
+    <!-- 12. Enterprise -->
+    <div class="theme-card" id="cardTheme_enterprise" onclick="setTemaGlobal('enterprise')">
+        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #2563eb;"></span><span class="tc-title">Dark Enterprise</span></div><span class="tc-badge hidden">AKTIF</span></div>
+        <div class="tc-palette"><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #2563eb;"></span><span class="color-circle" style="background: #0a192f;"></span></div>
+    </div>
+</div>
                         <button onclick="simpanPengaturanSistem()" style="width: 100%; margin-top: 25px;"><i class="fas fa-save"></i> Simpan Pengaturan Sistem</button>
                     </div>
 
