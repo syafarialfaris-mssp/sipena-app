@@ -2,15 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
-const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' })); 
+app.use(express.urlencoded({ extended: true }));
 
 // ==========================================
-// 1. KONFIGURASI CLOUDINARY (FILE STORAGE)
+// 1. KONFIGURASI CLOUDINARY
 // ==========================================
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -34,16 +34,14 @@ async function uploadToCloudinary(base64Data, folderName) {
 }
 
 // ==========================================
-// 2. KONEKSI MONGODB (SERVERLESS OPTIMIZED)
+// 2. KONEKSI MONGODB (ANTI-CRASH SERVERLESS)
 // ==========================================
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/sipena";
-let isConnected = false;
 
 const connectDB = async () => {
-    if (isConnected) return;
+    if (mongoose.connection.readyState >= 1) return;
     try {
-        const db = await mongoose.connect(MONGODB_URI);
-        isConnected = db.connections[0].readyState;
+        await mongoose.connect(MONGODB_URI);
         console.log("MongoDB Berhasil Terhubung");
     } catch (error) {
         console.error("Gagal konek MongoDB:", error);
@@ -56,7 +54,7 @@ app.use(async (req, res, next) => {
 });
 
 // ==========================================
-// 3. SCHEMA MONGODB (MENCEGAH OVERWRITE ERROR DI VERCEL)
+// 3. SCHEMA MONGODB
 // ==========================================
 const transform = (doc, ret) => { ret.id = ret._id; delete ret._id; delete ret.__v; return ret; };
 
@@ -70,7 +68,6 @@ const SystemSchema = new mongoose.Schema({
     adminAvatar: { type: String, default: '' }, kelas: [String], mapel: [String]
 });
 SystemSchema.set('toJSON', { transform });
-// PERBAIKAN: Gunakan mongoose.models sebelum model baru
 const System = mongoose.models.System || mongoose.model('System', SystemSchema);
 
 const PegawaiSchema = new mongoose.Schema({
@@ -103,30 +100,34 @@ const NilaiSchema = new mongoose.Schema({
 NilaiSchema.set('toJSON', { transform });
 const Nilai = mongoose.models.Nilai || mongoose.model('Nilai', NilaiSchema);
 
-// Inisialisasi Data Default
+// Inisialisasi Data Default (Dilengkapi try-catch pelindung)
 const initDB = async () => {
-    let sys = await System.findOne();
-    if (!sys) {
-        await System.create({
-            kelas: ["7.1", "7.2", "7.3", "8.1", "8.2", "9.1"],
-            mapel: ["Akidah Akhlak", "Alquran Hadis", "Bahasa Arab", "Bahasa Indonesia", "Bahasa Inggris", "Fikih", "Informatika", "IPA", "IPS", "Matematika", "Pendidikan Pancasila", "PJOK", "Seni Budaya"]
-        });
-    }
-    let guru = await Pegawai.findOne();
-    if (!guru) {
-        await Pegawai.create({ email: "guru@sipena.com", password: "123", role: "guru", nama: "Bapak Ahmad", mengajar: [{ kelas: "7.1", mapel: "Matematika" }, { kelas: "7.2", mapel: "Matematika" }, { kelas: "7.1", mapel: "Informatika" }] });
-    }
-    let siswa = await Siswa.findOne();
-    if (!siswa) {
-        await Siswa.insertMany([
-            { nisn: "111222", nama_siswa: "Agus Pratama", jk: "Laki-laki", kelas: "7.1", no_hp_ortu: "08112233" },
-            { nisn: "333444", nama_siswa: "Siti Aisyah", jk: "Perempuan", kelas: "7.2", no_hp_ortu: "08998877" }
-        ]);
+    try {
+        let sys = await System.findOne();
+        if (!sys) {
+            await System.create({
+                kelas: ["7.1", "7.2", "7.3", "8.1", "8.2", "9.1"],
+                mapel: ["Akidah Akhlak", "Alquran Hadis", "Bahasa Arab", "Bahasa Indonesia", "Bahasa Inggris", "Fikih", "Informatika", "IPA", "IPS", "Matematika", "Pendidikan Pancasila", "PJOK", "Seni Budaya"]
+            });
+        }
+        let guru = await Pegawai.findOne();
+        if (!guru) {
+            await Pegawai.create({ email: "guru@sipena.com", password: "123", role: "guru", nama: "Bapak Ahmad", mengajar: [{ kelas: "7.1", mapel: "Matematika" }, { kelas: "7.2", mapel: "Matematika" }, { kelas: "7.1", mapel: "Informatika" }] });
+        }
+        let siswa = await Siswa.findOne();
+        if (!siswa) {
+            await Siswa.insertMany([
+                { nisn: "111222", nama_siswa: "Agus Pratama", jk: "Laki-laki", kelas: "7.1", no_hp_ortu: "08112233" },
+                { nisn: "333444", nama_siswa: "Siti Aisyah", jk: "Perempuan", kelas: "7.2", no_hp_ortu: "08998877" }
+            ]);
+        }
+    } catch (err) {
+        console.log("DB Init berjalan:", err.message);
     }
 };
 
 // ==========================================
-// 4. API ROUTES (DATABASE PERMANEN & CLOUD)
+// 4. API ROUTES
 // ==========================================
 app.get('/api/system', async (req, res) => {
     await initDB();
@@ -145,8 +146,10 @@ app.put('/api/system', async (req, res) => {
 
 app.post('/api/login-pegawai', async (req, res) => {
     const { email, password } = req.body;
+    await initDB(); // Pastikan DB terisi sebelum mengecek email
     const sys = await System.findOne();
-    if (email === sys.adminEmail && password === sys.adminPass) {
+    
+    if (sys && email === sys.adminEmail && password === sys.adminPass) {
         return res.json({ success: true, data: { role: 'admin', nama: 'Super Admin SIPENA', email: sys.adminEmail, avatar: sys.adminAvatar }});
     }
     const user = await Pegawai.findOne({ email, password, role: 'guru' });
@@ -192,7 +195,7 @@ app.post('/api/import-guru', async (req, res) => {
             });
         }
     }
-    res.json({ success: true, message: "Data guru dari Excel berhasil diimport!" });
+    res.json({ success: true, message: "Data guru berhasil diimport!" });
 });
 app.put('/api/guru/:id', async (req, res) => {
     const up = await Pegawai.findByIdAndUpdate(req.params.id, req.body);
@@ -233,7 +236,6 @@ app.post('/api/input-nilai-bulk', async (req, res) => {
         if (item.lampiran_file && item.lampiran_file.startsWith('data:')) {
             urlLampiran = await uploadToCloudinary(item.lampiran_file, 'lampiran_tugas');
         }
-
         const dataBaru = {
             tanggal_input: new Date().toLocaleDateString('id-ID'), tahunAjaran: sys.tahunAjaran, semester: sys.semester,
             guru_sudah_baca: true, dilihat_ortu: false, waktu_dilihat: null, feedback_ortu: "",
@@ -336,14 +338,6 @@ app.put('/api/nilai/:id/feedback', async (req, res) => {
 
 app.put('/api/guru/baca-notif', async (req, res) => {
     await Nilai.updateMany({ guru_sudah_baca: false }, { guru_sudah_baca: true }); res.json({ success: true });
-});
-
-// ==========================================
-// 5. KONFIGURASI DEPLOYMENT VERCEL
-// ==========================================
-app.use(express.static(path.join(__dirname, 'public')));
-app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 module.exports = app;
