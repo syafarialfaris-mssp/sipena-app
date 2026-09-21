@@ -686,7 +686,7 @@
         </div>
     </div>
 
-    <!-- MODAL POP-UP EDIT NILAI -->
+    <!-- MODAL POP-UP EDIT NILAI MURID -->
     <div id="modalEditNilai" class="modal-overlay hidden">
         <div class="modal-container" style="max-width: 900px;">
             <div class="modal-header">
@@ -711,6 +711,36 @@
                 <div style="display:flex; gap:10px;">
                     <button onclick="batalEditNilaiGuru()" style="background:#64748b; padding:10px 20px;">Batal</button>
                     <button id="btnSimpanEditGuru" onclick="simpanEditNilaiGuruLengkap()" class="btn-success" style="padding:10px 20px;"><i class="fas fa-check"></i> Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP EDIT METADATA KOLOM MASAL -->
+    <div id="modalEditKolom" class="modal-overlay hidden">
+        <div class="modal-container" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:var(--text-dark); font-size:18px;"><i class="fas fa-cog" style="color:var(--accent); margin-right:8px;"></i> Edit Informasi Penilaian</h3>
+                <button class="btn-close" onclick="tutupModalEditKolom()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="background: #f8fafc;">
+                <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 13px; color: #1e3a8a; border: 1px solid rgba(59, 130, 246, 0.2);">
+                    <i class="fas fa-info-circle"></i> Perubahan di sini akan diterapkan secara massal pada <b>semua nilai murid</b> di kolom <b id="lblKolomEditName"></b>.
+                </div>
+                <input type="hidden" id="edKolomJenis">
+                <input type="hidden" id="edKolomUrutan">
+                <label><b>Sub Topik / Materi Pembelajaran:</b></label>
+                <input type="text" id="edKolomTopik" placeholder="Cth: Teks Observasi">
+                <label><b>Batas KKTP Baru:</b></label>
+                <input type="number" id="edKolomKktp" min="0" max="100" placeholder="Cth: 75">
+                <label><b>Tanggal Pelaksanaan (Opsional):</b></label>
+                <input type="date" id="edKolomWaktu">
+            </div>
+            <div class="modal-footer" style="justify-content: space-between; flex-wrap:wrap; gap:10px;">
+                <button onclick="hapusKolomPenilaian()" class="btn-hapus" style="padding:10px 20px;"><i class="fas fa-trash"></i> Hapus Kolom Ini</button>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="tutupModalEditKolom()" style="background:#64748b; padding:10px 20px;">Batal</button>
+                    <button id="btnSimpanKolom" onclick="simpanEditKolomLengkap()" class="btn-success" style="padding:10px 20px;"><i class="fas fa-check"></i> Simpan Perubahan</button>
                 </div>
             </div>
         </div>
@@ -1261,7 +1291,21 @@
 
             let grouped = {}; nData.forEach(n => { let key = n.nisn; if(!grouped[key]) { grouped[key] = { nisn: n.nisn, nama_siswa: n.nama_siswa, scores: {} }; } grouped[key].scores[n.urutan] = n; });
 
-            let theadHtml = `<tr><th>NISN</th><th>Nama Murid</th>`; urutanKeys.forEach(u => { theadHtml += `<th>${fJenis.includes('Akhir') ? 'Nilai Akhir' : 'Ke-'+u}</th>`; }); theadHtml += `</tr>`;
+            let theadHtml = `<tr><th>NISN</th><th>Nama Murid</th>`; 
+            
+            // PERBAIKAN: Membuat header judul tabel bisa diklik
+            urutanKeys.forEach(u => { 
+                let sampleRec = nData.find(n => n.urutan === u);
+                let top = sampleRec && sampleRec.topik ? sampleRec.topik : '';
+                let kk = sampleRec && sampleRec.kktp ? sampleRec.kktp : '';
+                let wak = sampleRec && sampleRec.waktu_pelaksanaan ? sampleRec.waktu_pelaksanaan : '';
+                let safeTopik = encodeURIComponent(top).replace(/'/g, "%27"); // Hindari error tanda kutip
+                
+                let titleStr = fJenis.includes('Akhir') ? 'Nilai Akhir' : 'Ke-'+u;
+                theadHtml += `<th style="cursor:pointer; color:var(--accent);" title="Klik untuk cek/edit detail kolom" onclick="bukaModalEditKolom('${u}', '${safeTopik}', '${kk}', '${wak}')"><div style="display:flex; align-items:center; gap:6px; background:var(--bg-main); padding:6px 12px; border-radius:8px; border:1px solid #e2e8f0; justify-content:center; transition:0.3s;" onmouseover="this.style.background='var(--accent)'; this.style.color='white';" onmouseout="this.style.background='var(--bg-main)'; this.style.color='var(--accent)';">${titleStr} <i class="fas fa-pencil-alt" style="font-size:10px;"></i></div></th>`;
+            }); 
+            theadHtml += `</tr>`;
+            
             let tbodyHtml = ''; let objVals = Object.values(grouped).sort((a,b) => a.nama_siswa.localeCompare(b.nama_siswa));
             
             if(objVals.length === 0) { tbodyHtml = `<tr><td colspan="${2 + urutanKeys.length}" style="text-align:center; padding:30px; color:#94a3b8;">Belum ada data nilai diinput untuk filter ini.</td></tr>`; } 
@@ -1281,6 +1325,48 @@
             }
             document.querySelector('#tabelKelolaNilai thead').innerHTML = theadHtml; document.querySelector('#tabelKelolaNilai tbody').innerHTML = tbodyHtml;
         }
+
+        // --- FUNGSI BARU UNTUK EDIT/HAPUS KOLOM MASSAL ---
+        function bukaModalEditKolom(urutan, topikEncoded, kktp, waktu) {
+            const jenis = document.getElementById('filterKelolaJenis').value;
+            document.getElementById('lblKolomEditName').innerText = jenis.includes('Akhir') ? jenis : `${jenis} Ke-${urutan}`;
+            document.getElementById('edKolomJenis').value = jenis;
+            document.getElementById('edKolomUrutan').value = urutan;
+            document.getElementById('edKolomTopik').value = decodeURIComponent(topikEncoded);
+            document.getElementById('edKolomKktp').value = kktp;
+            document.getElementById('edKolomWaktu').value = waktu;
+            document.getElementById('modalEditKolom').classList.remove('hidden');
+        }
+        function tutupModalEditKolom() { document.getElementById('modalEditKolom').classList.add('hidden'); }
+        
+        async function simpanEditKolomLengkap() {
+            const tahunAjaran = document.getElementById('filterTaKelola').value; const semester = document.getElementById('filterSmtKelola').value; const kelas = document.getElementById('filterKelolaKelas').value; const mapel = document.getElementById('filterKelolaMapel').value;
+            const jenis = document.getElementById('edKolomJenis').value; const urutan = document.getElementById('edKolomUrutan').value;
+            const topik = document.getElementById('edKolomTopik').value; const kktp = document.getElementById('edKolomKktp').value; const waktu = document.getElementById('edKolomWaktu').value;
+            
+            if(!kktp) return alert("Batas KKTP tidak boleh kosong!");
+            const btn = document.getElementById('btnSimpanKolom'); const oriText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...'; btn.disabled = true;
+            
+            try {
+                const res = await fetch('/api/nilai/bulk-edit-meta', { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ tahunAjaran, semester, kelas, mapel, jenis, urutan, topik, kktp, waktu_pelaksanaan: waktu }) });
+                const result = await res.json();
+                if(result.success) { alert("Informasi kolom berhasil diperbarui!"); tutupModalEditKolom(); muatKelolaNilai(); } else { alert(result.message); }
+            } catch(e) { alert("Gagal koneksi ke server."); } finally { btn.innerHTML = oriText; btn.disabled = false; }
+        }
+        
+        async function hapusKolomPenilaian() {
+            if(!confirm("PERHATIAN SANGAT PENTING!\n\nAnda yakin ingin MENGHAPUS SELURUH NILAI MURID pada kolom penilaian ini?\nSeluruh data, nilai remedial, dan lampiran tugas di kolom ini akan dihapus secara permanen.")) return;
+            const tahunAjaran = document.getElementById('filterTaKelola').value; const semester = document.getElementById('filterSmtKelola').value; const kelas = document.getElementById('filterKelolaKelas').value; const mapel = document.getElementById('filterKelolaMapel').value;
+            const jenis = document.getElementById('edKolomJenis').value; const urutan = document.getElementById('edKolomUrutan').value;
+            
+            try {
+                const res = await fetch('/api/nilai/bulk-delete-column', { method: 'DELETE', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ tahunAjaran, semester, kelas, mapel, jenis, urutan }) });
+                const result = await res.json();
+                if(result.success) { alert("Seluruh data pada kolom tersebut berhasil dihapus!"); tutupModalEditKolom(); muatKelolaNilai(); updateWidgets(userAktif); } else { alert(result.message); }
+            } catch(e) { alert("Gagal koneksi ke server."); }
+        }
+        // --------------------------------------------------
 
         function editNilaiGuru(id) {
             const n = window.dataKelolaNilaiCache.find(x => x.id === id); if(!n) return;
