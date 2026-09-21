@@ -566,25 +566,7 @@
                         <div style="flex:1; min-width:150px;"><label style="font-size:12px; font-weight:bold;">Mata Pelajaran:</label><select id="filterKelolaMapel" onchange="muatKelolaNilai()" style="margin:0;"><option value="SEMUA">-- Pilih Mapel --</option></select></div>
                         <div style="flex:1; min-width:150px;"><label style="font-size:12px; font-weight:bold;">Kategori:</label><select id="filterKelolaJenis" onchange="muatKelolaNilai()" style="margin:0;"><option value="Tugas Harian">Tugas Harian</option><option value="Asesmen Sumatif">Asesmen Sumatif</option><option value="Asesmen Akhir Semester">Asesmen Akhir Semester</option></select></div>
                     </div>
-                    <div id="wadahEditNilaiGuru" class="hidden" style="margin-bottom: 35px; background: #f4f7fe; border: 1px solid #e2e8f0; padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                        <h4 style="margin-top:0; color:var(--accent); font-size:18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;"><i class="fas fa-edit"></i> Edit Komprehensif Nilai, Catatan & Lampiran</h4>
-                        <div style="display:flex; gap:15px; flex-wrap: wrap; margin-bottom: 20px;">
-                            <input type="hidden" id="edId">
-                            <div style="flex:2; min-width: 200px;"><label>Nama Murid:</label><input type="text" id="edNama" readonly style="background:#e2e8f0; font-weight:bold;"></div>
-                            <div style="flex:1; min-width: 150px;"><label>Update KKTP:</label><input type="number" id="edKktp" min="0" max="100"></div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-                            <div class="rem-box"><h5><i class="fas fa-flag"></i> Nilai Utama (Awal)</h5><label>Skor:</label> <input type="number" id="edSkor" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatan" placeholder="Catatan..."><label>Link Materi:</label> <input type="text" id="edLink" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFile" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileUtama" style="font-size:12px; margin-bottom:10px;"></div></div>
-                            <div class="rem-box"><h5><i class="fas fa-tools"></i> Remedial Tahap 1</h5><label>Skor Rem 1:</label> <input type="number" id="edRem1" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatanRem1" placeholder="Catatan perbaikan..."><label>Link Materi:</label> <input type="text" id="edLinkRem1" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFileRem1" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileRem1" style="font-size:12px; margin-bottom:10px;"></div></div>
-                            <div class="rem-box"><h5><i class="fas fa-tools"></i> Remedial Tahap 2</h5><label>Skor Rem 2:</label> <input type="number" id="edRem2" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatanRem2" placeholder="Catatan perbaikan..."><label>Link Materi:</label> <input type="text" id="edLinkRem2" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFileRem2" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileRem2" style="font-size:12px; margin-bottom:10px;"></div></div>
-                            <div class="rem-box"><h5><i class="fas fa-tools"></i> Remedial Tahap 3</h5><label>Skor Rem 3:</label> <input type="number" id="edRem3" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatanRem3" placeholder="Catatan perbaikan..."><label>Link Materi:</label> <input type="text" id="edLinkRem3" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFileRem3" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileRem3" style="font-size:12px; margin-bottom:10px;"></div></div>
-                        </div>
-                        <div style="margin-top: 25px; text-align:right;">
-                            <button onclick="hapusNilaiGuru(document.getElementById('edId').value)" class="btn-hapus" style="float:left;"><i class="fas fa-trash"></i> Hapus Riwayat Nilai Ini</button>
-                            <button onclick="batalEditNilaiGuru()" style="background:#64748b;"><i class="fas fa-times"></i> Batal / Tutup</button>
-                            <button id="btnSimpanEditGuru" onclick="simpanEditNilaiGuruLengkap()" class="btn-success" style="margin-left:10px;"><i class="fas fa-check"></i> Simpan Perubahan</button>
-                        </div>
-                    </div>
+                    
                     <div style="overflow-x:auto; padding-bottom: 20px;"><table id="tabelKelolaNilai" style="font-size: 13px;"><thead></thead><tbody></tbody></table></div>
                 </div>
 
@@ -700,6 +682,36 @@
             <div class="modal-footer">
                 <button onclick="tutupModalSiswa()" style="background:#64748b; padding:10px 20px;">Batal</button>
                 <button id="btnSimpanSiswa" onclick="simpanSiswaManual()" class="btn-success" style="padding:10px 20px;"><i class="fas fa-save"></i> SIMPAN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP EDIT NILAI -->
+    <div id="modalEditNilai" class="modal-overlay hidden">
+        <div class="modal-container" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:var(--text-dark); font-size:18px;"><i class="fas fa-edit" style="color:var(--accent); margin-right:8px;"></i> Edit Komprehensif Nilai & Remedial</h3>
+                <button class="btn-close" onclick="batalEditNilaiGuru()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="background: #f8fafc;">
+                <div style="display:flex; gap:15px; flex-wrap: wrap; margin-bottom: 20px;">
+                    <input type="hidden" id="edId">
+                    <div style="flex:2; min-width: 200px;"><label>Nama Murid:</label><input type="text" id="edNama" readonly style="background:#e2e8f0; font-weight:bold;"></div>
+                    <div style="flex:1; min-width: 150px;"><label>Update KKTP:</label><input type="number" id="edKktp" min="0" max="100"></div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <div class="rem-box"><h5><i class="fas fa-flag"></i> Nilai Utama (Awal)</h5><label>Skor:</label> <input type="number" id="edSkor" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatan" placeholder="Catatan..."><label>Link Materi:</label> <input type="text" id="edLink" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFile" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileUtama" style="font-size:12px; margin-bottom:10px;"></div></div>
+                    <div class="rem-box"><h5><i class="fas fa-tools"></i> Remedial Tahap 1</h5><label>Skor Rem 1:</label> <input type="number" id="edRem1" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatanRem1" placeholder="Catatan perbaikan..."><label>Link Materi:</label> <input type="text" id="edLinkRem1" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFileRem1" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileRem1" style="font-size:12px; margin-bottom:10px;"></div></div>
+                    <div class="rem-box"><h5><i class="fas fa-tools"></i> Remedial Tahap 2</h5><label>Skor Rem 2:</label> <input type="number" id="edRem2" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatanRem2" placeholder="Catatan perbaikan..."><label>Link Materi:</label> <input type="text" id="edLinkRem2" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFileRem2" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileRem2" style="font-size:12px; margin-bottom:10px;"></div></div>
+                    <div class="rem-box"><h5><i class="fas fa-tools"></i> Remedial Tahap 3</h5><label>Skor Rem 3:</label> <input type="number" id="edRem3" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatanRem3" placeholder="Catatan perbaikan..."><label>Link Materi:</label> <input type="text" id="edLinkRem3" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFileRem3" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileRem3" style="font-size:12px; margin-bottom:10px;"></div></div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: space-between; flex-wrap:wrap; gap:10px;">
+                <button onclick="hapusNilaiGuru(document.getElementById('edId').value)" class="btn-hapus" style="padding:10px 20px;"><i class="fas fa-trash"></i> Hapus Riwayat Nilai Ini</button>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="batalEditNilaiGuru()" style="background:#64748b; padding:10px 20px;">Batal</button>
+                    <button id="btnSimpanEditGuru" onclick="simpanEditNilaiGuruLengkap()" class="btn-success" style="padding:10px 20px;"><i class="fas fa-check"></i> Simpan Perubahan</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1273,7 +1285,10 @@
         function editNilaiGuru(id) {
             const n = window.dataKelolaNilaiCache.find(x => x.id === id); if(!n) return;
             hapusFileUtama = false; hapusFileRem1 = false; hapusFileRem2 = false; hapusFileRem3 = false;
-            document.getElementById('wadahEditNilaiGuru').classList.remove('hidden'); document.getElementById('edId').value = n.id; document.getElementById('edNama').value = n.nama_siswa;
+            
+            document.getElementById('modalEditNilai').classList.remove('hidden'); 
+            
+            document.getElementById('edId').value = n.id; document.getElementById('edNama').value = n.nama_siswa;
             if(n.kktp) { document.getElementById('edKktp').value = n.kktp; document.getElementById('edKktp').disabled = false; } else { document.getElementById('edKktp').value = ''; document.getElementById('edKktp').disabled = true; }
 
             document.getElementById('edSkor').value = n.skor; document.getElementById('edCatatan').value = n.catatan || ''; document.getElementById('edLink').value = n.lampiran_link || ''; document.getElementById('edFile').value = '';
@@ -1287,10 +1302,9 @@
 
             document.getElementById('edRem3').value = n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : ''; document.getElementById('edCatatanRem3').value = n.catatan_rem3 || ''; document.getElementById('edLinkRem3').value = n.lampiran_link_rem3 || ''; document.getElementById('edFileRem3').value = '';
             document.getElementById('infoFileRem3').innerHTML = n.lampiran_file_rem3 ? `<span style="color:#10b981; font-weight:600;"><i class="fas fa-check-circle"></i> File Terlampir</span> &nbsp;|&nbsp; <a href="#" onclick="setHapusFile('rem3'); return false;" style="color:#ef4444; text-decoration:none;"><i class="fas fa-trash"></i> Hapus File</a>` : `<span style="color:#94a3b8; font-style:italic;">Belum ada lampiran file</span>`;
-            window.scrollTo({ top: 0, behavior: 'smooth' }); 
         }
 
-        function batalEditNilaiGuru() { document.getElementById('wadahEditNilaiGuru').classList.add('hidden'); }
+        function batalEditNilaiGuru() { document.getElementById('modalEditNilai').classList.add('hidden'); }
 
         async function getBase64Helper(fileInput) {
             if(fileInput.files.length > 0) { const f = fileInput.files[0]; if(f.size > 2 * 1024 * 1024) throw new Error("Ukuran file baru maksimal 2MB!"); return await new Promise(res => { const r = new FileReader(); r.onload = e => res(e.target.result); r.readAsDataURL(f); }); }
@@ -1320,7 +1334,7 @@
             } catch(e) { alert(e.message); } finally { btnSimpan.innerHTML = originalText; btnSimpan.disabled = false; }
         }
 
-        async function hapusNilaiGuru(id) { if(confirm("PERHATIAN!\nAnda yakin ingin menghapus seluruh data nilai beserta riwayat ini?")) { await fetch(`/api/nilai/${id}`, { method: 'DELETE' }); muatKelolaNilai(); updateWidgets(userAktif); } }
+        async function hapusNilaiGuru(id) { if(confirm("PERHATIAN!\nAnda yakin ingin menghapus seluruh data nilai beserta riwayat ini?")) { await fetch(`/api/nilai/${id}`, { method: 'DELETE' }); batalEditNilaiGuru(); muatKelolaNilai(); updateWidgets(userAktif); } }
 
         function gantiTabOrtu(tipe) {
             tipeLaporanOrtuAktif = tipe; document.querySelectorAll('#ortuRekapTotal .tab-btn-lap').forEach(btn => { btn.style.background = '#f1f5f9'; btn.style.color = '#64748b'; });
