@@ -85,6 +85,8 @@ SiswaSchema.set('toJSON', { transform });
 const Siswa = mongoose.models.Siswa || mongoose.model('Siswa', SiswaSchema);
 
 const NilaiSchema = new mongoose.Schema({
+    // PERBAIKAN: Menambahkan kolom tahunAjaran dan semester agar MongoDB tidak membuang datanya
+    tahunAjaran: String, semester: String,
     nisn: String, nama_siswa: String, nama_guru: String, mapel: String, kelas: String,
     jenis: String, urutan: String, topik: String, kktp: Number, skor: Number, catatan: String, waktu_pelaksanaan: String,
     lampiran_link: String, lampiran_file: String, status_tuntas: String, tanggal_input: String,
@@ -146,7 +148,7 @@ app.put('/api/system', async (req, res) => {
 
 app.post('/api/login-pegawai', async (req, res) => {
     const { email, password } = req.body;
-    await initDB(); // Pastikan DB terisi sebelum mengecek email
+    await initDB(); 
     const sys = await System.findOne();
     
     if (sys && email === sys.adminEmail && password === sys.adminPass) {
