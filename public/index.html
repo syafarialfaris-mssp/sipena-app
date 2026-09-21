@@ -43,6 +43,17 @@
         tbody td { padding: 18px 20px; border: none; font-size: 14px; color: var(--text-dark); white-space: nowrap;}
         tbody tr td:first-child { border-radius: 16px 0 0 16px; }
         tbody tr td:last-child { border-radius: 0 16px 16px 0; }
+        
+        /* Modal (Pop-up) Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; display: flex; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
+        .modal-container { background: var(--card-bg); width: 90%; max-width: 700px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        .modal-header { padding: 20px 30px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .modal-header h3 { margin: 0; color: var(--text-dark); font-size: 18px; font-weight: 700; }
+        .modal-body { padding: 30px; overflow-y: auto; }
+        .modal-footer { padding: 20px 30px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc; }
+        .btn-close { background: transparent; color: #64748b; font-size: 20px; padding: 0; width: 30px; height: 30px; border-radius: 50%; border: none; }
+        .btn-close:hover { background: #e2e8f0; color: #ef4444; }
+
         #loginPage { display: flex; min-height: 100vh; overflow: hidden; background: white; }
         .login-left { flex: 1.2; background: linear-gradient(135deg, var(--sidebar-bg), var(--accent)); color: white; display: flex; flex-direction: column; justify-content: center; padding: 60px; position: relative; overflow: hidden; background-size: cover; background-position: center; }
         .login-left-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3)); z-index: 1; display: none; }
@@ -264,6 +275,7 @@
             <div class="content">
                 <div id="dashboardWidgets"></div>
 
+                <!-- HALAMAN PENGATURAN SISTEM -->
                 <div id="pengaturanSistem" class="halaman card hidden">
                     <h3 style="color:var(--text-dark); margin-top:0; margin-bottom: 20px;">Pengaturan & Kustomisasi SIPENA</h3>
 
@@ -340,67 +352,55 @@
 
                         <label><b>Pilihan Katalog Warna Tema (Klik Untuk Mengganti):</b></label>
                         <div class="theme-grid-new">
-    <!-- 1. Default -->
-    <div class="theme-card" id="cardTheme_default" onclick="setTemaGlobal('default')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #4318ff;"></span><span class="tc-title">Classic Slate Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #f4f7fe;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #4318ff;"></span><span class="color-circle" style="background: #111c44;"></span></div>
-    </div>
-    <!-- 2. Emerald -->
-    <div class="theme-card" id="cardTheme_emerald" onclick="setTemaGlobal('emerald')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #10b981;"></span><span class="tc-title">Emerald Oasis</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #ecfdf5;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #10b981;"></span><span class="color-circle" style="background: #064e3b;"></span></div>
-    </div>
-    <!-- 3. Rose -->
-    <div class="theme-card" id="cardTheme_rose" onclick="setTemaGlobal('rose')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #e11d48;"></span><span class="tc-title">Classroom Rose</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #ffe4e6;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #e11d48;"></span><span class="color-circle" style="background: #881337;"></span></div>
-    </div>
-    <!-- 4. Golden -->
-    <div class="theme-card" id="cardTheme_golden" onclick="setTemaGlobal('golden')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #d97706;"></span><span class="tc-title">Golden Amber</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #fef3c7;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #d97706;"></span><span class="color-circle" style="background: #3e2723;"></span></div>
-    </div>
-    <!-- 5. Oceanic -->
-    <div class="theme-card" id="cardTheme_oceanic" onclick="setTemaGlobal('oceanic')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #06b6d4;"></span><span class="tc-title">Oceanic Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #e0f2fe;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #06b6d4;"></span><span class="color-circle" style="background: #0f172a;"></span></div>
-    </div>
-    <!-- 6. Lavender -->
-    <div class="theme-card" id="cardTheme_lavender" onclick="setTemaGlobal('lavender')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #8b5cf6;"></span><span class="tc-title">Royal Lavender</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #f5f3ff;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #8b5cf6;"></span><span class="color-circle" style="background: #4c1d95;"></span></div>
-    </div>
-    <!-- 7. Teal -->
-    <div class="theme-card" id="cardTheme_teal" onclick="setTemaGlobal('teal')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #14b8a6;"></span><span class="tc-title">Teal Tranquility</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #ccfbf1;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #14b8a6;"></span><span class="color-circle" style="background: #115e59;"></span></div>
-    </div>
-    <!-- 8. Minimalist -->
-    <div class="theme-card" id="cardTheme_minimalist" onclick="setTemaGlobal('minimalist')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #64748b;"></span><span class="tc-title">Clean Minimalist</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #64748b;"></span><span class="color-circle" style="background: #334155;"></span></div>
-    </div>
-    <!-- 9. Nordic -->
-    <div class="theme-card" id="cardTheme_nordic" onclick="setTemaGlobal('nordic')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #3b82f6;"></span><span class="tc-title">Nordic Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #e0e7ff;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #3b82f6;"></span><span class="color-circle" style="background: #1e3a8a;"></span></div>
-    </div>
-    <!-- 10. Sunset -->
-    <div class="theme-card" id="cardTheme_sunset" onclick="setTemaGlobal('sunset')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #ea580c;"></span><span class="tc-title">Warm Sunset</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #ffedd5;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #ea580c;"></span><span class="color-circle" style="background: #431407;"></span></div>
-    </div>
-    <!-- 11. Kemenag -->
-    <div class="theme-card" id="cardTheme_kemenag" onclick="setTemaGlobal('kemenag')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #d4af37;"></span><span class="tc-title">Hijau Kemenag</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #d4af37;"></span><span class="color-circle" style="background: #065f46;"></span></div>
-    </div>
-    <!-- 12. Enterprise -->
-    <div class="theme-card" id="cardTheme_enterprise" onclick="setTemaGlobal('enterprise')">
-        <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #2563eb;"></span><span class="tc-title">Dark Enterprise</span></div><span class="tc-badge hidden">AKTIF</span></div>
-        <div class="tc-palette"><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #2563eb;"></span><span class="color-circle" style="background: #0a192f;"></span></div>
-    </div>
-</div>
+                            <div class="theme-card" id="cardTheme_default" onclick="setTemaGlobal('default')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #4318ff;"></span><span class="tc-title">Classic Slate Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #f4f7fe;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #4318ff;"></span><span class="color-circle" style="background: #111c44;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_emerald" onclick="setTemaGlobal('emerald')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #10b981;"></span><span class="tc-title">Emerald Oasis</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #ecfdf5;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #10b981;"></span><span class="color-circle" style="background: #064e3b;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_rose" onclick="setTemaGlobal('rose')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #e11d48;"></span><span class="tc-title">Classroom Rose</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #ffe4e6;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #e11d48;"></span><span class="color-circle" style="background: #881337;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_golden" onclick="setTemaGlobal('golden')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #d97706;"></span><span class="tc-title">Golden Amber</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #fef3c7;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #d97706;"></span><span class="color-circle" style="background: #3e2723;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_oceanic" onclick="setTemaGlobal('oceanic')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #06b6d4;"></span><span class="tc-title">Oceanic Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #e0f2fe;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #06b6d4;"></span><span class="color-circle" style="background: #0f172a;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_lavender" onclick="setTemaGlobal('lavender')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #8b5cf6;"></span><span class="tc-title">Royal Lavender</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #f5f3ff;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #8b5cf6;"></span><span class="color-circle" style="background: #4c1d95;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_teal" onclick="setTemaGlobal('teal')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #14b8a6;"></span><span class="tc-title">Teal Tranquility</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #ccfbf1;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #14b8a6;"></span><span class="color-circle" style="background: #115e59;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_minimalist" onclick="setTemaGlobal('minimalist')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #64748b;"></span><span class="tc-title">Clean Minimalist</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #64748b;"></span><span class="color-circle" style="background: #334155;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_nordic" onclick="setTemaGlobal('nordic')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #3b82f6;"></span><span class="tc-title">Nordic Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #e0e7ff;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #3b82f6;"></span><span class="color-circle" style="background: #1e3a8a;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_sunset" onclick="setTemaGlobal('sunset')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #ea580c;"></span><span class="tc-title">Warm Sunset</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #ffedd5;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #ea580c;"></span><span class="color-circle" style="background: #431407;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_kemenag" onclick="setTemaGlobal('kemenag')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #d4af37;"></span><span class="tc-title">Hijau Kemenag</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #d4af37;"></span><span class="color-circle" style="background: #065f46;"></span></div>
+                            </div>
+                            <div class="theme-card" id="cardTheme_enterprise" onclick="setTemaGlobal('enterprise')">
+                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #2563eb;"></span><span class="tc-title">Dark Enterprise</span></div><span class="tc-badge hidden">AKTIF</span></div>
+                                <div class="tc-palette"><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #2563eb;"></span><span class="color-circle" style="background: #0a192f;"></span></div>
+                            </div>
+                        </div>
                         <button onclick="simpanPengaturanSistem()" style="width: 100%; margin-top: 25px;"><i class="fas fa-save"></i> Simpan Pengaturan Sistem</button>
                     </div>
 
@@ -450,38 +450,22 @@
 
                 <!-- HALAMAN DATA GURU -->
                 <div id="adminDataGuru" class="halaman card hidden">
-                    <div style="display: flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                        <h3 style="margin:0;">Manajemen Data Guru & Jadwal</h3>
-                        <div style="display:flex; gap:10px;">
-                            <button onclick="bukaFormGuru()" class="btn-success" style="background:#3b82f6;"><i class="fas fa-plus"></i> Tambah Guru</button>
+                    <div style="display: flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap:15px; margin-bottom: 20px;">
+                        <div style="display:flex; align-items:center; gap: 15px;">
+                            <h3 style="margin:0;">Manajemen Data Guru</h3>
+                            <div style="display:flex; align-items:center; gap:8px; background:#f1f5f9; padding:5px 10px; border-radius:10px;">
+                                <label style="font-size:12px; font-weight:600; color:#475569; margin:0;">Filter Kelas:</label>
+                                <select id="filterKelasGuruAdmin" onchange="muatTabelGuru()" style="margin:0; padding:6px 10px; width:auto; border-radius:6px; font-size:12px;"></select>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                            <button onclick="bukaModalGuru()" class="btn-success" style="background:#3b82f6;"><i class="fas fa-plus"></i> Tambah Guru</button>
                             <button onclick="downloadTemplate('guru')" class="btn-success" style="padding:14px;"><i class="fas fa-file-excel"></i> Template</button>
                             <input type="file" id="fileGuru" accept=".xlsx" style="display:none;" onchange="importExcel('guru')">
                             <button onclick="document.getElementById('fileGuru').click()" style="background:#f59e0b; padding:14px;"><i class="fas fa-upload"></i> Upload</button>
                         </div>
                     </div>
-                    <div id="wadahInputGuru" class="hidden" style="background: #f4f7fe; padding: 25px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
-                        <div style="display: flex; gap: 20px; flex-wrap:wrap;">
-                            <div style="flex:1; min-width:300px;">
-                                <input type="hidden" id="gIdEdit">
-                                <label>Nama Lengkap Guru:</label><input type="text" id="gNama" placeholder="Contoh: Budi Santoso, S.Pd">
-                                <label>Email Login:</label><input type="email" id="gEmail" placeholder="budi@sipena.com">
-                                <label>Password:</label><input type="text" id="gPass" placeholder="123456">
-                            </div>
-                            <div style="flex:1; min-width:300px;">
-                                <label><b>Pemetaan Kelas & Mapel:</b></label>
-                                <div style="display:flex; gap:10px;">
-                                    <select id="gKelas" style="flex:1;"><option value="">-- Kelas --</option></select>
-                                    <select id="gMapel" style="flex:2;"><option value="">-- Mata Pelajaran --</option></select>
-                                </div>
-                                <button onclick="tambahDaftarMengajar()" style="background:#10b981; width:100%; margin-bottom:15px;"><i class="fas fa-plus"></i> Tambah Ke Pemetaan</button>
-                                <div id="wadahDaftarMengajar" style="margin-bottom:10px; min-height: 40px; background: white; border: 2px dashed #cbd5e1; padding: 15px; border-radius: 16px;"></div>
-                            </div>
-                        </div>
-                        <div style="display:flex; gap:10px; margin-top:10px;">
-                            <button onclick="tutupFormGuru()" style="background:#64748b; flex:1;">Batal</button>
-                            <button id="btnSimpanGuru" onclick="simpanGuruManual()" style="flex:3; background:#10b981;"><i class="fas fa-save"></i> SIMPAN GURU</button>
-                        </div>
-                    </div>
+                    
                     <div style="overflow-x:auto; padding-bottom: 20px;">
                         <table id="tabelGuru">
                             <thead><tr><th>Nama Guru</th><th>Akun Login</th><th>Password</th><th>Pemetaan Kelas & Mapel</th><th style="text-align:center;">Aksi</th></tr></thead>
@@ -492,32 +476,22 @@
 
                 <!-- HALAMAN DATA MURID -->
                 <div id="adminDataSiswa" class="halaman card hidden">
-                    <div style="display: flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                        <h3 style="margin:0; color:var(--text-dark);">Manajemen Data Murid</h3>
-                        <div style="display:flex; gap:10px;">
-                            <button onclick="bukaFormSiswa()" class="btn-success" style="background:#3b82f6;"><i class="fas fa-plus"></i> Tambah Murid</button>
+                    <div style="display: flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap:15px; margin-bottom: 20px;">
+                        <div style="display:flex; align-items:center; gap: 15px;">
+                            <h3 style="margin:0; color:var(--text-dark);">Manajemen Data Murid</h3>
+                            <div style="display:flex; align-items:center; gap:8px; background:#f1f5f9; padding:5px 10px; border-radius:10px;">
+                                <label style="font-size:12px; font-weight:600; color:#475569; margin:0;">Filter Kelas:</label>
+                                <select id="filterKelasSiswa" onchange="muatTabelSiswa()" style="margin:0; padding:6px 10px; width:auto; border-radius:6px; font-size:12px;"></select>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                            <button onclick="bukaModalSiswa()" class="btn-success" style="background:#3b82f6;"><i class="fas fa-plus"></i> Tambah Murid</button>
                             <button onclick="downloadTemplate('siswa')" class="btn-success" style="padding:14px;"><i class="fas fa-file-excel"></i> Template</button>
                             <input type="file" id="fileSiswa" accept=".xlsx" style="display:none;" onchange="importExcel('siswa')">
                             <button onclick="document.getElementById('fileSiswa').click()" style="background:#f59e0b; padding:14px;"><i class="fas fa-upload"></i> Upload</button>
                         </div>
                     </div>
-                    <div id="wadahFilterGuru" class="hidden" style="margin-bottom: 20px;">
-                        <label><b>Tampilkan Tabel Murid Kelas:</b></label>
-                        <select id="filterKelasSiswaGuru" onchange="muatTabelSiswa()"></select>
-                    </div>
-                    <div id="wadahInputSiswa" class="hidden" style="background: #f4f7fe; padding: 25px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
-                        <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
-                            <div style="flex:1; min-width: 150px;"><label>NISN:</label><input type="text" id="sNisn" placeholder="NISN (Wajib)"></div>
-                            <div style="flex:2; min-width: 200px;"><label>Nama Lengkap Murid:</label><input type="text" id="sNama" placeholder="Nama Lengkap"></div>
-                            <div style="flex:1; min-width: 120px;"><label>L/P:</label><select id="sJk"><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div>
-                            <div style="flex:1; min-width: 120px;"><label>Kelas:</label><select id="sKelas"><option value="">-- Pilih --</option></select></div>
-                            <div style="flex:1.5; min-width: 150px;"><label>No HP Ortu (WA):</label><input type="text" id="sHp" placeholder="08..."></div>
-                        </div>
-                        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
-                            <button onclick="tutupFormSiswa()" style="background:#64748b; padding: 14px 24px;">Batal</button>
-                            <button id="btnSimpanSiswa" onclick="simpanSiswaManual()" class="btn-success" style="padding: 14px 24px;"><i class="fas fa-plus"></i> Simpan Murid</button>
-                        </div>
-                    </div>
+                    
                     <div style="overflow-x:auto; padding-bottom: 20px;">
                         <table id="tabelSiswa"><thead><tr><th>NISN</th><th>Nama Murid</th><th>L/P</th><th>Kelas</th><th>HP Ortu</th><th style="text-align:center;">Aksi</th></tr></thead><tbody></tbody></table>
                     </div>
@@ -674,6 +648,62 @@
         </div>
     </div>
 
+    <!-- MODAL POP-UP GURU -->
+    <div id="modalGuru" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modalGuruTitle">Tambah Data Guru</h3>
+                <button class="btn-close" onclick="tutupModalGuru()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; gap: 20px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:250px;">
+                        <input type="hidden" id="gIdEdit">
+                        <label>Nama Lengkap Guru:</label><input type="text" id="gNama" placeholder="Contoh: Budi Santoso, S.Pd">
+                        <label>Email Login:</label><input type="email" id="gEmail" placeholder="budi@sipena.com">
+                        <label>Password:</label><input type="text" id="gPass" placeholder="123456">
+                    </div>
+                    <div style="flex:1; min-width:250px;">
+                        <label><b>Pemetaan Kelas & Mapel:</b></label>
+                        <div style="display:flex; gap:10px;">
+                            <select id="gKelas" style="flex:1;"><option value="">-- Kelas --</option></select>
+                            <select id="gMapel" style="flex:2;"><option value="">-- Mata Pelajaran --</option></select>
+                        </div>
+                        <button onclick="tambahDaftarMengajar()" style="background:#10b981; width:100%; margin-bottom:15px;"><i class="fas fa-plus"></i> Tambah Ke Pemetaan</button>
+                        <div id="wadahDaftarMengajar" style="margin-bottom:10px; min-height: 40px; background: white; border: 2px dashed #cbd5e1; padding: 15px; border-radius: 16px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="tutupModalGuru()" style="background:#64748b; padding:10px 20px;">Batal</button>
+                <button id="btnSimpanGuru" onclick="simpanGuruManual()" style="background:#10b981; padding:10px 20px;"><i class="fas fa-save"></i> SIMPAN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP SISWA -->
+    <div id="modalSiswa" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modalSiswaTitle">Tambah Data Murid</h3>
+                <button class="btn-close" onclick="tutupModalSiswa()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div style="flex:1; min-width: 150px;"><label>NISN:</label><input type="text" id="sNisn" placeholder="NISN (Wajib)"></div>
+                    <div style="flex:2; min-width: 250px;"><label>Nama Lengkap Murid:</label><input type="text" id="sNama" placeholder="Nama Lengkap"></div>
+                    <div style="flex:1; min-width: 120px;"><label>L/P:</label><select id="sJk"><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div>
+                    <div style="flex:1; min-width: 150px;"><label>Kelas:</label><select id="sKelas"><option value="">-- Pilih --</option></select></div>
+                    <div style="flex:1.5; min-width: 200px;"><label>No HP Ortu (WA):</label><input type="text" id="sHp" placeholder="08..."></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="tutupModalSiswa()" style="background:#64748b; padding:10px 20px;">Batal</button>
+                <button id="btnSimpanSiswa" onclick="simpanSiswaManual()" class="btn-success" style="padding:10px 20px;"><i class="fas fa-save"></i> SIMPAN</button>
+            </div>
+        </div>
+    </div>
+
     <!-- LOGIKA JAVASCRIPT -->
     <script>
         const masterDataMapel = ["Akidah Akhlak", "Alquran Hadis", "Bahasa Arab", "Bahasa Indonesia", "Bahasa Inggris", "Fikih", "Informatika", "IPA", "IPS", "Matematika", "Mulok", "Pendidikan Pancasila", "PJOK", "Prakarya", "Seni", "SKI"];
@@ -716,6 +746,28 @@
             const sysKls = sysData.kelas || []; const sysMpl = sysData.mapel || [];
             const elgKelas = document.getElementById('gKelas'); if(elgKelas) elgKelas.innerHTML = '<option value="">-- Kelas --</option>' + sysKls.map(k=>`<option value="${k}">${k}</option>`).join('');
             const elgMapel = document.getElementById('gMapel'); if(elgMapel) elgMapel.innerHTML = '<option value="">-- Mata Pelajaran --</option>' + sysMpl.map(m=>`<option value="${m}">${m}</option>`).join('');
+            
+            // Populating Filter Kelas untuk Admin di Halaman Data Guru
+            const elFilterGuruAdmin = document.getElementById('filterKelasGuruAdmin');
+            if(elFilterGuruAdmin) {
+                elFilterGuruAdmin.innerHTML = '<option value="SEMUA">-- Semua Kelas --</option>' + sysKls.map(k=>`<option value="${k}">${k}</option>`).join('');
+            }
+
+            // Populating Filter Kelas untuk Halaman Data Siswa (Bisa diakses Admin & Guru)
+            const elFilterSiswa = document.getElementById('filterKelasSiswa');
+            if(elFilterSiswa) {
+                let optSiswa = '<option value="SEMUA">-- Semua Kelas --</option>';
+                if(userAktif && userAktif.role === 'guru') {
+                    optSiswa = '<option value="SEMUA">-- Semua Kelas Saya --</option>';
+                    const guruKls = [...new Set(userAktif.mengajar.map(m => m.kelas))].sort(); 
+                    guruKls.forEach(k => optSiswa += `<option value="${k}">${k}</option>`);
+                } else { 
+                    sysKls.forEach(k => optSiswa += `<option value="${k}">${k}</option>`); 
+                }
+                elFilterSiswa.innerHTML = optSiswa;
+            }
+
+            // Pilihan input kelas untuk modal Siswa
             const elsKelas = document.getElementById('sKelas');
             if(elsKelas) {
                 let optSiswa = '<option value="">-- Pilih Kelas --</option>';
@@ -724,13 +776,12 @@
                 } else { sysKls.forEach(k => optSiswa += `<option value="${k}">${k}</option>`); }
                 elsKelas.innerHTML = optSiswa;
             }
+
             let kelasUnik = []; let mapelUnik = [];
             if(userAktif && userAktif.role === 'admin') {
                 kelasUnik = sysKls; mapelUnik = sysMpl;
             } else if(userAktif && userAktif.role === 'guru') {
                 kelasUnik = [...new Set(userAktif.mengajar.map(m => m.kelas))].sort(); mapelUnik = [...new Set(userAktif.mengajar.map(m => m.mapel))].sort();
-                const elFilterSiswa = document.getElementById('filterKelasSiswaGuru');
-                if(elFilterSiswa) { let optMyKelas = '<option value="SEMUA">-- Semua Kelas Saya --</option>'; kelasUnik.forEach(k => optMyKelas += `<option value="${k}">${k}</option>`); elFilterSiswa.innerHTML = optMyKelas; }
                 const elnKelasMapel = document.getElementById('nKelasMapel');
                 if(elnKelasMapel) { let optMyKombinasi = '<option value="">-- Pilih Kelas & Mapel --</option>'; userAktif.mengajar.forEach(m => { optMyKombinasi += `<option value="${m.kelas}|${m.mapel}">${m.kelas} - ${m.mapel}</option>`; }); elnKelasMapel.innerHTML = optMyKombinasi; }
             }
@@ -909,7 +960,7 @@
             document.getElementById('menuAdmin').classList.add('hidden'); document.getElementById('menuGuru').classList.add('hidden'); document.getElementById('menuOrtu').classList.add('hidden');
 
             if (user.role === 'admin') { document.getElementById('menuAdmin').classList.remove('hidden'); switchSetting('setAkademik', document.querySelector('.btn-set-menu')); populateFiltersLaporanDanKelola(); bukaHalaman('pengaturanSistem'); } 
-            else if (user.role === 'guru') { document.getElementById('menuGuru').classList.remove('hidden'); document.getElementById('wadahFilterGuru').classList.remove('hidden'); populateFiltersLaporanDanKelola(); bukaHalaman('guruKelolaNilai'); } 
+            else if (user.role === 'guru') { document.getElementById('menuGuru').classList.remove('hidden'); populateFiltersLaporanDanKelola(); bukaHalaman('guruKelolaNilai'); } 
             else { document.getElementById('menuOrtu').classList.remove('hidden'); bukaHalaman('ortuNilaiHarian'); }
             
             if(user.role !== 'ortu') { updateWidgets(user); } else { updateWidgetsOrtuKosong(); updateNotifOrtu(); }
@@ -966,8 +1017,8 @@
             if(window.innerWidth <= 768) { document.querySelector('.sidebar').classList.remove('open'); document.querySelector('.menu-overlay').classList.remove('open'); }
 
             if(idHalaman === 'adminMasterData') { renderListMaster(); }
-            if(idHalaman === 'adminDataGuru') { muatTabelGuru(); tutupFormGuru(); }
-            if(idHalaman === 'adminDataSiswa') { muatTabelSiswa(); tutupFormSiswa(); }
+            if(idHalaman === 'adminDataGuru') { muatTabelGuru(); }
+            if(idHalaman === 'adminDataSiswa') { muatTabelSiswa(); }
             if(idHalaman === 'guruInputNilai') { document.getElementById('nKelasMapel').value = ""; document.getElementById('wadahPengaturanNilai').classList.add('hidden'); }
             if(idHalaman === 'laporanRekap') { gantiTabLaporan('Tugas Harian'); }
             if(idHalaman === 'ortuNilaiHarian') { muatRaporAnakFeed(); updateNotifOrtu(); } 
@@ -975,8 +1026,18 @@
             if(idHalaman === 'guruKelolaNilai') { fetch('/api/guru/baca-notif', { method: 'PUT' }).then(() => { document.getElementById('notifFeedback').classList.add('hidden'); muatKelolaNilai(); }); }
         }
 
-        function bukaFormGuru() { document.getElementById('wadahInputGuru').classList.remove('hidden'); }
-        function tutupFormGuru() { batalEditGuru(); document.getElementById('wadahInputGuru').classList.add('hidden'); }
+        // ============================
+        // MODAL GURU LOGIC
+        // ============================
+        function bukaModalGuru() { 
+            document.getElementById('modalGuru').classList.remove('hidden');
+            document.getElementById('modalGuruTitle').innerText = 'Tambah Data Guru';
+            document.getElementById('gIdEdit').value = ''; document.getElementById('gNama').value = ''; document.getElementById('gEmail').value = ''; document.getElementById('gPass').value = ''; 
+            tempMengajarGuru = []; renderTempMengajar(); 
+            modeEditGuru = false; document.getElementById('btnSimpanGuru').innerHTML = '<i class="fas fa-save"></i> SIMPAN'; 
+        }
+        function tutupModalGuru() { document.getElementById('modalGuru').classList.add('hidden'); modeEditGuru = false; }
+        
         function tambahDaftarMengajar() {
             const k = document.getElementById('gKelas').value; const m = document.getElementById('gMapel').value;
             if(!k || !m) return alert("Pilih Kelas dan Mapel terlebih dahulu!"); tempMengajarGuru.push({kelas: k, mapel: m});
@@ -986,10 +1047,17 @@
         function hapusDaftarMengajar(idx) { tempMengajarGuru.splice(idx, 1); renderTempMengajar(); }
 
         async function muatTabelGuru() {
-            const res = await fetch('/api/guru'); const hasil = await res.json(); let dataGuru = hasil.data; dataGuru.sort((a, b) => a.nama.localeCompare(b.nama));
+            const res = await fetch('/api/guru'); const hasil = await res.json(); let dataGuru = hasil.data; 
+            
+            const filterKelasAdmin = document.getElementById('filterKelasGuruAdmin') ? document.getElementById('filterKelasGuruAdmin').value : 'SEMUA';
+            if(filterKelasAdmin !== 'SEMUA') {
+                dataGuru = dataGuru.filter(g => g.mengajar && g.mengajar.some(m => m.kelas === filterKelasAdmin));
+            }
+
+            dataGuru.sort((a, b) => a.nama.localeCompare(b.nama));
             document.querySelector('#tabelGuru tbody').innerHTML = dataGuru.map(g => { 
                 const listAjar = g.mengajar ? g.mengajar.map(m => `<span class="badge" style="background:#475569;">${m.kelas} - ${m.mapel}</span>`).join(' ') : '-'; 
-                return `<tr><td>${g.nama}</td><td>${g.email}</td><td>${g.password}</td><td>${listAjar}</td><td style="text-align:center;"><button onclick="editGuru('${g.id}')" class="btn-aksi btn-edit"><i class="fas fa-edit"></i></button><button onclick="hapusGuru('${g.id}')" class="btn-aksi btn-hapus"><i class="fas fa-trash"></i></button></td></tr>`; 
+                return `<tr><td>${g.nama}</td><td>${g.email}</td><td>${g.password}</td><td style="white-space:normal; min-width:200px; line-height:2;">${listAjar}</td><td style="text-align:center;"><button onclick="editGuru('${g.id}')" class="btn-aksi btn-edit"><i class="fas fa-edit"></i></button><button onclick="hapusGuru('${g.id}')" class="btn-aksi btn-hapus"><i class="fas fa-trash"></i></button></td></tr>`; 
             }).join('');
         }
 
@@ -997,30 +1065,48 @@
             const nama = document.getElementById('gNama').value; const email = document.getElementById('gEmail').value; const password = document.getElementById('gPass').value;
             if(!nama || !email || tempMengajarGuru.length === 0) return alert("Lengkapi data Nama, Email, dan Pemetaan Mapel!");
             const payload = { nama, email, password, mengajar: tempMengajarGuru };
-            if(modeEditGuru) { const id = document.getElementById('gIdEdit').value; await fetch(`/api/guru/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) }); alert("Data Guru diupdate!"); tutupFormGuru(); } 
+            if(modeEditGuru) { const id = document.getElementById('gIdEdit').value; await fetch(`/api/guru/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) }); alert("Data Guru diupdate!"); } 
             else { await fetch('/api/guru', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) }); alert("Guru ditambahkan!"); }
-            tempMengajarGuru = []; renderTempMengajar(); muatTabelGuru(); updateWidgets(userAktif);
-            document.getElementById('gNama').value=''; document.getElementById('gEmail').value=''; document.getElementById('gPass').value='';
+            tutupModalGuru(); muatTabelGuru(); updateWidgets(userAktif);
         }
 
         async function editGuru(id) {
             const res = await fetch('/api/guru'); const hasil = await res.json(); const g = hasil.data.find(x => x.id === id);
             if(g) { 
-                bukaFormGuru(); modeEditGuru = true; document.getElementById('gIdEdit').value = g.id; document.getElementById('gNama').value = g.nama; document.getElementById('gEmail').value = g.email; document.getElementById('gPass').value = g.password; 
-                tempMengajarGuru = [...g.mengajar]; renderTempMengajar(); document.getElementById('btnSimpanGuru').innerHTML = '<i class="fas fa-check"></i> UPDATE GURU'; window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                document.getElementById('modalGuru').classList.remove('hidden');
+                document.getElementById('modalGuruTitle').innerText = 'Update Data Guru';
+                modeEditGuru = true; document.getElementById('gIdEdit').value = g.id; document.getElementById('gNama').value = g.nama; document.getElementById('gEmail').value = g.email; document.getElementById('gPass').value = g.password; 
+                tempMengajarGuru = [...g.mengajar]; renderTempMengajar(); document.getElementById('btnSimpanGuru').innerHTML = '<i class="fas fa-check"></i> UPDATE'; 
             }
         }
-        function batalEditGuru() { modeEditGuru = false; document.getElementById('gIdEdit').value = ''; document.getElementById('gNama').value = ''; document.getElementById('gEmail').value = ''; document.getElementById('gPass').value = ''; tempMengajarGuru = []; renderTempMengajar(); document.getElementById('btnSimpanGuru').innerHTML = '<i class="fas fa-save"></i> SIMPAN GURU'; }
         async function hapusGuru(id) { if(confirm("Yakin hapus data Guru ini beserta akses login-nya?")) { await fetch(`/api/guru/${id}`, { method: 'DELETE' }); muatTabelGuru(); updateWidgets(userAktif); } }
 
-        function bukaFormSiswa() { document.getElementById('wadahInputSiswa').classList.remove('hidden'); document.getElementById('sNisn').readOnly = false; document.getElementById('sNisn').value = ''; document.getElementById('sNama').value = ''; document.getElementById('sHp').value = ''; document.getElementById('sKelas').value = ''; document.getElementById('btnSimpanSiswa').innerHTML = '<i class="fas fa-plus"></i> Simpan Murid'; modeEditSiswa = false; }
-        function tutupFormSiswa() { document.getElementById('wadahInputSiswa').classList.add('hidden'); }
+        // ============================
+        // MODAL SISWA LOGIC
+        // ============================
+        function bukaModalSiswa() { 
+            document.getElementById('modalSiswa').classList.remove('hidden'); 
+            document.getElementById('modalSiswaTitle').innerText = 'Tambah Data Murid';
+            document.getElementById('sNisn').readOnly = false; document.getElementById('sNisn').value = ''; document.getElementById('sNama').value = ''; document.getElementById('sHp').value = ''; document.getElementById('sKelas').value = ''; 
+            document.getElementById('btnSimpanSiswa').innerHTML = '<i class="fas fa-save"></i> SIMPAN'; modeEditSiswa = false; 
+        }
+        function tutupModalSiswa() { document.getElementById('modalSiswa').classList.add('hidden'); modeEditSiswa = false;}
 
         async function muatTabelSiswa() {
             const res = await fetch('/api/siswa'); const hasil = await res.json(); let dataSiswa = hasil.data;
+            const filterKelas = document.getElementById('filterKelasSiswa') ? document.getElementById('filterKelasSiswa').value : 'SEMUA';
+            
             if(userAktif && userAktif.role === 'guru') {
-                const filterKelas = document.getElementById('filterKelasSiswaGuru').value;
-                if(filterKelas === 'SEMUA') { const kelasUnik = [...new Set(userAktif.mengajar.map(m => m.kelas))]; dataSiswa = hasil.data.filter(s => kelasUnik.includes(s.kelas)); } else { dataSiswa = hasil.data.filter(s => s.kelas === filterKelas); }
+                if(filterKelas === 'SEMUA') { 
+                    const kelasUnik = [...new Set(userAktif.mengajar.map(m => m.kelas))]; 
+                    dataSiswa = hasil.data.filter(s => kelasUnik.includes(s.kelas)); 
+                } else { 
+                    dataSiswa = hasil.data.filter(s => s.kelas === filterKelas); 
+                }
+            } else {
+                if(filterKelas !== 'SEMUA') {
+                    dataSiswa = hasil.data.filter(s => s.kelas === filterKelas); 
+                }
             }
             dataSiswa.sort((a,b) => a.nama_siswa.localeCompare(b.nama_siswa));
             document.querySelector('#tabelSiswa tbody').innerHTML = dataSiswa.map(s => `<tr><td>${s.nisn}</td><td>${s.nama_siswa}</td><td>${s.jk}</td><td>${s.kelas}</td><td>${s.no_hp_ortu}</td><td style="text-align:center;"><button onclick="editSiswa('${s.nisn}')" class="btn-aksi btn-edit"><i class="fas fa-edit"></i></button><button onclick="hapusSiswa('${s.nisn}')" class="btn-aksi btn-hapus"><i class="fas fa-trash"></i></button></td></tr>`).join('');
@@ -1029,15 +1115,20 @@
         async function simpanSiswaManual() {
             let k = document.getElementById('sKelas').value;
             const data = { nisn: document.getElementById('sNisn').value, nama_siswa: document.getElementById('sNama').value, jk: document.getElementById('sJk').value, kelas: k, no_hp_ortu: document.getElementById('sHp').value };
-            if(!data.kelas) return alert("Pilih kelas murid!");
-            if(modeEditSiswa) { await fetch(`/api/siswa/${data.nisn}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) }); alert("Data berhasil diupdate!"); tutupFormSiswa(); } 
+            if(!data.kelas || !data.nisn || !data.nama_siswa) return alert("Lengkapi data NISN, Nama, dan Kelas!");
+            if(modeEditSiswa) { await fetch(`/api/siswa/${data.nisn}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) }); alert("Data berhasil diupdate!"); } 
             else { await fetch('/api/siswa', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) }); alert("Berhasil ditambahkan!"); }
-            muatTabelSiswa(); updateWidgets(userAktif); document.getElementById('sNisn').value=''; document.getElementById('sNama').value=''; document.getElementById('sHp').value='';
+            tutupModalSiswa(); muatTabelSiswa(); updateWidgets(userAktif);
         }
         
         async function editSiswa(nisn) {
             const hasil = await (await fetch('/api/siswa')).json(); const s = hasil.data.find(x => x.nisn === nisn);
-            if(s) { bukaFormSiswa(); document.getElementById('sNisn').value = s.nisn; document.getElementById('sNisn').readOnly = true; document.getElementById('sNama').value = s.nama_siswa; document.getElementById('sKelas').value = s.kelas; document.getElementById('sHp').value = s.no_hp_ortu; document.getElementById('sJk').value = s.jk; modeEditSiswa = true; document.getElementById('btnSimpanSiswa').innerHTML = '<i class="fas fa-check"></i> Update Murid'; window.scrollTo({top:0, behavior:'smooth'}); }
+            if(s) { 
+                document.getElementById('modalSiswa').classList.remove('hidden'); 
+                document.getElementById('modalSiswaTitle').innerText = 'Update Data Murid';
+                document.getElementById('sNisn').value = s.nisn; document.getElementById('sNisn').readOnly = true; document.getElementById('sNama').value = s.nama_siswa; document.getElementById('sKelas').value = s.kelas; document.getElementById('sHp').value = s.no_hp_ortu; document.getElementById('sJk').value = s.jk; 
+                modeEditSiswa = true; document.getElementById('btnSimpanSiswa').innerHTML = '<i class="fas fa-check"></i> UPDATE'; 
+            }
         }
         async function hapusSiswa(nisn) { if(confirm("Yakin hapus data murid?")) { await fetch(`/api/siswa/${nisn}`, { method: 'DELETE' }); muatTabelSiswa(); updateWidgets(userAktif); } }
 
