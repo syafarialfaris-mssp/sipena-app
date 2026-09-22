@@ -771,9 +771,32 @@
         let hapusFileUtama = false, hapusFileRem1 = false, hapusFileRem2 = false, hapusFileRem3 = false;
         let tempMengajarGuru = []; let dataSiswaInputAktif = []; 
         let tipeLaporanAktif = 'Tugas Harian'; let tipeLaporanOrtuAktif = 'Tugas Harian'; let ortuMapelAktif = "";
+        let notifInterval = null; // Menyimpan timer notifikasi real-time
         window.dataKelolaNilaiCache = [];
+        window.laporanDataExport = []; // Variabel khusus untuk data bersih Excel
         const curYear = new Date().getFullYear(); const startYear = 2026;
         document.querySelectorAll('.footer-teks').forEach(el => el.innerText = `© ${curYear > startYear ? startYear + '-' + curYear : startYear} [Muhammad Syafari Studio Project]. All Rights Reserved.`);
+
+        // --- SISTEM NOTIFIKASI REAL-TIME ---
+        async function cekNotifRealtime(user) {
+            // Jangan munculkan angka notif jika guru sedang aktif membuka halaman Kelola Nilai (karena pasti langsung dibaca)
+            if (!document.getElementById('guruKelolaNilai').classList.contains('hidden')) return;
+            try {
+                const resN = await fetch('/api/nilai'); 
+                const dN = await resN.json(); 
+                const daftarMapelAjar = user.mengajar.map(m => m.mapel);
+                const nilaiGuru = dN.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester && daftarMapelAjar.includes(n.mapel));
+                const countUnread = nilaiGuru.filter(n => n.guru_sudah_baca === false).length; 
+                const badge = document.getElementById('notifFeedback');
+                if(countUnread > 0) { 
+                    badge.innerText = countUnread; 
+                    badge.classList.remove('hidden'); 
+                } else { 
+                    badge.classList.add('hidden'); 
+                }
+            } catch(e) {}
+        }
+        // ------------------------------------
 
         async function editMaster(jenis, idx) {
             let oldVal = sysData[jenis][idx]; let newVal = prompt(`Edit nama ${jenis === 'kelas' ? 'Kelas' : 'Mata Pelajaran'}:`, oldVal);
@@ -1015,7 +1038,12 @@
             document.getElementById('menuAdmin').classList.add('hidden'); document.getElementById('menuGuru').classList.add('hidden'); document.getElementById('menuOrtu').classList.add('hidden');
 
             if (user.role === 'admin') { document.getElementById('menuAdmin').classList.remove('hidden'); switchSetting('setAkademik', document.querySelector('.btn-set-menu')); populateFiltersLaporanDanKelola(); bukaHalaman('pengaturanSistem'); } 
-            else if (user.role === 'guru') { document.getElementById('menuGuru').classList.remove('hidden'); populateFiltersLaporanDanKelola(); bukaHalaman('guruKelolaNilai'); } 
+            else if (user.role === 'guru') { 
+                document.getElementById('menuGuru').classList.remove('hidden'); populateFiltersLaporanDanKelola(); bukaHalaman('guruKelolaNilai'); 
+                // Mulai polling detak notifikasi khusus Guru
+                if(notifInterval) clearInterval(notifInterval);
+                notifInterval = setInterval(() => cekNotifRealtime(userAktif), 30000); 
+            } 
             else { document.getElementById('menuOrtu').classList.remove('hidden'); bukaHalaman('ortuNilaiHarian'); }
             
             if(user.role !== 'ortu') { updateWidgets(user); } else { updateWidgetsOrtuKosong(); updateNotifOrtu(); }
@@ -1036,8 +1064,16 @@
                 kontenWidget = `<div class="widget-card wg-blue"><div class="widget-icon"><i class="fas fa-chalkboard"></i></div><div class="widget-info"><h4>Kelas Diampu</h4><h2>${kelasUnik.length}</h2></div></div><div class="widget-card wg-purple"><div class="widget-icon"><i class="fas fa-user-graduate"></i></div><div class="widget-info"><h4>Murid Diajar</h4><h2>${totalSiswaGuru}</h2></div></div><div class="widget-card wg-yellow"><div class="widget-icon"><i class="fas fa-book"></i></div><div class="widget-info"><h4>Mapel Diampu</h4><h2>${[...new Set(user.mengajar.map(m=>m.mapel))].length}</h2></div></div>`;
                 const resN = await fetch('/api/nilai'); const dN = await resN.json(); const daftarMapelAjar = user.mengajar.map(m => m.mapel);
                 const nilaiGuru = dN.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester && daftarMapelAjar.includes(n.mapel));
-                const countUnread = nilaiGuru.filter(n => n.guru_sudah_baca === false).length; const badge = document.getElementById('notifFeedback');
-                if(countUnread > 0) { badge.innerText = countUnread; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
+                
+                const countUnread = nilaiGuru.filter(n => n.guru_sudah_baca === false).length; 
+                const badge = document.getElementById('notifFeedback');
+                const isKelolaAktif = !document.getElementById('guruKelolaNilai').classList.contains('hidden');
+                
+                if(countUnread > 0 && !isKelolaAktif) { 
+                    badge.innerText = countUnread; badge.classList.remove('hidden'); 
+                } else { 
+                    badge.classList.add('hidden'); 
+                }
             }
             wadah.innerHTML = bannerHTML + `<div class="widget-grid">${kontenWidget}</div>`;
         }
@@ -1078,7 +1114,10 @@
             if(idHalaman === 'laporanRekap') { gantiTabLaporan('Tugas Harian'); }
             if(idHalaman === 'ortuNilaiHarian') { muatRaporAnakFeed(); updateNotifOrtu(); } 
             if(idHalaman === 'ortuRekapTotal') { buildDropdownMapelOrtu(); updateNotifOrtu(); } 
-            if(idHalaman === 'guruKelolaNilai') { fetch('/api/guru/baca-notif', { method: 'PUT' }).then(() => { document.getElementById('notifFeedback').classList.add('hidden'); muatKelolaNilai(); }); }
+            if(idHalaman === 'guruKelolaNilai') { 
+                document.getElementById('notifFeedback').classList.add('hidden'); // Sembunyikan notif badge
+                fetch('/api/guru/baca-notif', { method: 'PUT' }).then(() => { muatKelolaNilai(); }); 
+            }
         }
 
         // ============================
@@ -1564,25 +1603,44 @@
             document.getElementById('judulJenisLaporan').innerText = tipe === 'Keseluruhan' ? 'KESELURUHAN' : tipe.toUpperCase(); muatLaporanGlobal();
         }
 
-        // --- PERBAIKAN EXCEL: Menghapus teks TUNTAS/TIDAK TUNTAS, hanya ekspor angkanya saja ---
+        // --- PERBAIKAN EXCEL: Export data murni berupa angka langsung dari Array ---
         function eksporExcel() { 
-            const tabelClone = document.getElementById('tabelLaporan').cloneNode(true);
-            tabelClone.querySelectorAll('.excel-remove').forEach(el => el.remove());
-            XLSX.writeFile(XLSX.utils.table_to_book(tabelClone), `Laporan_SIPENA_${tipeLaporanAktif}.xlsx`); 
+            const wb = XLSX.utils.book_new(); 
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(window.laporanDataExport), "Laporan Nilai"); 
+            XLSX.writeFile(wb, `Laporan_SIPENA_${tipeLaporanAktif}.xlsx`); 
         }
 
-        // --- PERBAIKAN PDF: Deteksi tabel lebar & ubah jadi Landscape otomatis ---
+        // --- PERBAIKAN PDF: Memaksa tabel terekam penuh (max-content) dan orientasi dinamis ---
         function eksporPDF() { 
             const element = document.getElementById('areaCetakPDF');
-            const isWide = document.getElementById('tabelLaporan').scrollWidth > 800; // Jika tabel lebar, otomatis Landscape
+            
+            // Simpan ukuran dan batas awal layar
+            const oriOverflow = element.style.overflowX;
+            const oriWidth = element.style.width;
+            const oriMaxW = element.style.maxWidth;
+            
+            // Buka batasan agar html2canvas merekam tabel secara utuh
+            element.style.overflowX = 'visible';
+            element.style.width = 'max-content';
+            element.style.maxWidth = 'none';
+            
+            // Deteksi jika tabel terlalu panjang
+            const isWide = element.scrollWidth > 800; 
+            
             const opt = {
-                margin:       0.4,
+                margin:       0.3,
                 filename:     `Laporan_SIPENA_${tipeLaporanAktif}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { scale: 2, useCORS: true, windowWidth: element.scrollWidth + 50 },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: isWide ? 'landscape' : 'portrait' }
             };
-            html2pdf().set(opt).from(element).save();
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Kembalikan tampilan scroll ke sediakala
+                element.style.overflowX = oriOverflow;
+                element.style.width = oriWidth;
+                element.style.maxWidth = oriMaxW;
+            });
         }
         
         async function muatLaporanGlobal() {
@@ -1608,6 +1666,13 @@
                 groupedData[key].scores[colKey] = { skor: skorFinal, status: n.status_tuntas }; groupedData[key].total += Number(skorFinal); groupedData[key].count += 1;
             });
 
+            // Menyiapkan Data Bersih Khusus Untuk Excel
+            let exportDataArray = [];
+            let excelHeader = ["NISN", "Nama Murid", "Kelas", "Mata Pelajaran"];
+            urutanKeys.forEach(col => excelHeader.push(col));
+            excelHeader.push("RATA-RATA");
+            exportDataArray.push(excelHeader);
+
             let theadHtml = `<tr><th>NISN</th><th>Nama Murid</th><th>Kelas</th><th>Mata Pelajaran</th>`; urutanKeys.forEach(col => { theadHtml += `<th>${col}</th>`; }); theadHtml += `<th>RATA-RATA</th></tr>`;
             
             let tbodyHtml = ''; let objVals = Object.values(groupedData);
@@ -1615,16 +1680,30 @@
             else {
                 objVals.sort((a,b) => { if(a.mapel !== b.mapel) return a.mapel.localeCompare(b.mapel); if(a.kelas !== b.kelas) return a.kelas.localeCompare(b.kelas); return a.nama_siswa.localeCompare(b.nama_siswa); });
                 objVals.forEach(row => {
+                    let excelRowData = [row.nisn, row.nama_siswa, row.kelas, row.mapel];
+
                     tbodyHtml += `<tr><td><small style="color:#94a3b8;">${row.nisn}</small></td><td style="white-space:nowrap;"><b style="color:var(--text-dark);">${row.nama_siswa}</b></td><td><b>${row.kelas}</b></td><td><span style="background:var(--bg-main); color:var(--accent); padding:6px 12px; border-radius:8px; font-size:11px; font-weight:600; border:1px solid #e2e8f0;">${row.mapel}</span></td>`;
                     urutanKeys.forEach(col => {
                         let cell = row.scores[col];
-                        // Menambahkan class "excel-remove" agar teks status/warna tidak ikut terdownload di Excel
-                        if (cell) { let color = cell.status && cell.status.includes('TUNTAS') && !cell.status.includes('TIDAK') ? '#10b981' : '#ef4444'; tbodyHtml += `<td><b style="font-size:16px;">${cell.skor}</b><br class="excel-remove"><span class="excel-remove" style="font-size:9px; color:${color}; font-weight:bold;">${cell.status||'-'}</span></td>`; } 
-                        else { tbodyHtml += `<td><span style="color:#cbd5e1; font-weight:bold;">-</span></td>`; }
+                        if (cell) { 
+                            excelRowData.push(cell.skor); // Data Excel murni hanya angkanya saja
+                            let color = cell.status && cell.status.includes('TUNTAS') && !cell.status.includes('TIDAK') ? '#10b981' : '#ef4444'; 
+                            tbodyHtml += `<td><b style="font-size:16px;">${cell.skor}</b><br><span style="font-size:9px; color:${color}; font-weight:bold;">${cell.status||'-'}</span></td>`; 
+                        } 
+                        else { 
+                            excelRowData.push("-");
+                            tbodyHtml += `<td><span style="color:#cbd5e1; font-weight:bold;">-</span></td>`; 
+                        }
                     });
-                    let avg = Math.round(row.total / row.count); let avgColor = avg >= 70 ? '#10b981' : '#ef4444'; tbodyHtml += `<td><b style="font-size:16px; color:${avgColor};">${avg}</b></td></tr>`;
+                    let avg = Math.round(row.total / row.count); 
+                    excelRowData.push(avg); 
+                    exportDataArray.push(excelRowData); // Simpan baris bersih ke memory Excel
+
+                    let avgColor = avg >= 70 ? '#10b981' : '#ef4444'; 
+                    tbodyHtml += `<td><b style="font-size:16px; color:${avgColor};">${avg}</b></td></tr>`;
                 });
             }
+            window.laporanDataExport = exportDataArray; // Menjadikan array Excel siap diakses tombol export
             document.querySelector('#tabelLaporan thead').innerHTML = theadHtml; document.querySelector('#tabelLaporan tbody').innerHTML = tbodyHtml;
 
             // GRAFIK ADMIN/GURU
