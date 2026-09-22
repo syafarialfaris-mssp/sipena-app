@@ -234,6 +234,7 @@
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Akademik Kelas</p>
                 <div class="menu-item active" onclick="bukaHalaman('adminDataSiswa', this)"><i class="fas fa-users"></i> Data Murid Kelas</div>
                 <div class="menu-item" onclick="bukaHalaman('guruInputNilai', this)"><i class="fas fa-edit"></i> Input Nilai Baru</div>
+                <!-- PERBAIKAN: Badge notif angka dihapus -->
                 <div class="menu-item" onclick="bukaHalaman('guruKelolaNilai', this)"><i class="fas fa-tasks"></i> Kelola & Remedial</div>
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 20px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Laporan</p>
                 <div class="menu-item" onclick="bukaHalaman('laporanRekap', this)"><i class="fas fa-file-invoice"></i> Laporan Kelas</div>
@@ -889,11 +890,7 @@
             if (!user.role && user.nisn) user.role = 'ortu';
             userAktif = user;
             document.getElementById('loginPage').style.display = 'none'; document.getElementById('dashboardPage').style.display = 'flex'; 
-            
-            const namaUtama = user.nama || user.nama_siswa; 
-            document.getElementById('namaUserLog').innerText = namaUtama; 
-            document.getElementById('roleUserLog').innerText = (user.role || 'ORTU').toUpperCase(); 
-            document.getElementById('infoUserDeskripsi').style.display = 'block';
+            const namaUtama = user.nama || user.nama_siswa; document.getElementById('namaUserLog').innerText = namaUtama; document.getElementById('roleUserLog').innerText = (user.role || 'ORTU').toUpperCase(); document.getElementById('infoUserDeskripsi').style.display = 'block';
 
             if (user.avatar && user.avatar !== "") { document.getElementById('imgAvatar').src = user.avatar; document.getElementById('imgAvatar').style.display = 'block'; document.getElementById('inisialAvatar').style.display = 'none'; } 
             else { document.getElementById('imgAvatar').style.display = 'none'; document.getElementById('inisialAvatar').style.display = 'flex'; document.getElementById('inisialAvatar').innerText = namaUtama.charAt(0).toUpperCase(); }
@@ -909,25 +906,10 @@
             if(user.role !== 'ortu') { updateWidgets(user); } else { updateWidgetsOrtuKosong(); updateNotifOrtu(); }
         }
 
-        // --- PERBAIKAN: Mengubah Teks Sapaan Berdasarkan Role ---
         async function updateWidgets(user) {
             const wadah = document.getElementById('dashboardWidgets'); wadah.innerHTML = ''; 
-            
-            let judulSapaan = "";
-            let teksDeskripsi = "";
-
-            if (user.role === 'admin') {
-                judulSapaan = `Selamat Datang, ${user.nama}! 👋`;
-                teksDeskripsi = "Pantau perkembangan akademik, jadwal, dan kelola sistem dengan antarmuka yang lebih segar.";
-            } else if (user.role === 'guru') {
-                judulSapaan = `Selamat Datang, ${user.nama}! 👋`;
-                teksDeskripsi = "Pantau perkembangan akademik, jadwal, dan kelola sistem dengan antarmuka yang lebih segar.";
-            } else {
-                judulSapaan = `Selamat Datang, Orang Tua dari ${user.nama_siswa}! 👋`;
-                teksDeskripsi = "Pantau perkembangan nilai akademik anak dengan sistem informasi terintegrasi yang dapat diakses secara online kapanpun dan dimanapun.";
-            }
-
-            const bannerHTML = `<div class="welcome-banner"><div><h1>${judulSapaan}</h1><p>${teksDeskripsi}</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
+            const namaTampil = user.nama || user.nama_siswa || 'Pengguna';
+            const bannerHTML = `<div class="welcome-banner"><div><h1>Selamat Datang, ${namaTampil}! 👋</h1><p>Pantau perkembangan nilai akademik anak dengan sistem informasi terintegrasi yang dapat diakses secara online kapanpun dan dimanapun</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
 
             let kontenWidget = '';
             if (user.role === 'admin') {
@@ -951,24 +933,18 @@
             const asTuntas = as.filter(n => n.status_tuntas && n.status_tuntas.includes('TUNTAS') && !n.status_tuntas.includes('TIDAK')).length;
             const aaTuntas = aa.filter(n => n.status_tuntas && n.status_tuntas.includes('TUNTAS') && !n.status_tuntas.includes('TIDAK')).length;
 
-            const judulSapaan = `Selamat Datang, Orang Tua dari ${userAktif.nama_siswa}! 👋`;
-            const teksDeskripsi = "Pantau perkembangan nilai akademik anak dengan sistem informasi terintegrasi yang dapat diakses secara online kapanpun dan dimanapun.";
-            const bannerHTML = `<div class="welcome-banner"><div><h1>${judulSapaan}</h1><p>${teksDeskripsi}</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
-            
+            const namaTampil = userAktif.nama_siswa || 'Pengguna';
+            const bannerHTML = `<div class="welcome-banner"><div><h1>Selamat Datang, Orang Tua dari ${namaTampil}! 👋</h1><p>Pantau perkembangan nilai akademik anak dengan sistem informasi terintegrasi yang dapat diakses secara online kapanpun dan dimanapun</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
             const kontenWidget = `<div class="widget-card wg-blue"><div class="widget-icon"><i class="fas fa-file-alt"></i></div><div class="widget-info"><h4>Total Penilaian</h4><h2>${nilaiAktif.length}</h2></div></div><div class="widget-card wg-green"><div class="widget-icon"><i class="fas fa-check-circle"></i></div><div class="widget-info"><h4>Tugas Harian Tuntas</h4><h2>${thTuntas} <span style="font-size:16px; opacity:0.7; font-weight:500;">/ ${th.length}</span></h2></div></div><div class="widget-card wg-purple"><div class="widget-icon"><i class="fas fa-star"></i></div><div class="widget-info"><h4>Asesmen Sumatif Tuntas</h4><h2>${asTuntas} <span style="font-size:16px; opacity:0.7; font-weight:500;">/ ${as.length}</span></h2></div></div><div class="widget-card wg-red"><div class="widget-icon"><i class="fas fa-award"></i></div><div class="widget-info"><h4>Asesmen Akhir Tuntas</h4><h2>${aaTuntas} <span style="font-size:16px; opacity:0.7; font-weight:500;">/ ${aa.length}</span></h2></div></div>`;
             wadah.innerHTML = bannerHTML + `<div class="widget-grid">${kontenWidget}</div>`;
         }
 
         function updateWidgetsOrtuKosong() {
-            const wadah = document.getElementById('dashboardWidgets'); 
-            const judulSapaan = `Selamat Datang, Orang Tua dari ${userAktif.nama_siswa}! 👋`;
-            const teksDeskripsi = "Pantau perkembangan nilai akademik anak dengan sistem informasi terintegrasi yang dapat diakses secara online kapanpun dan dimanapun.";
-            const bannerHTML = `<div class="welcome-banner"><div><h1>${judulSapaan}</h1><p>${teksDeskripsi}</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
-            
+            const wadah = document.getElementById('dashboardWidgets'); const namaTampil = userAktif.nama_siswa || 'Pengguna';
+            const bannerHTML = `<div class="welcome-banner"><div><h1>Selamat Datang, Orang Tua dari ${namaTampil}! 👋</h1><p>Pantau perkembangan nilai akademik anak dengan sistem informasi terintegrasi yang dapat diakses secara online kapanpun dan dimanapun</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
             const kontenWidget = `<div class="widget-card wg-blue"><div class="widget-icon"><i class="fas fa-file-alt"></i></div><div class="widget-info"><h4>Total Penilaian</h4><h2>0</h2></div></div><div class="widget-card wg-green"><div class="widget-icon"><i class="fas fa-check-circle"></i></div><div class="widget-info"><h4>Tugas Harian Tuntas</h4><h2>0 <span style="font-size:16px; opacity:0.7; font-weight:500;">/ 0</span></h2></div></div><div class="widget-card wg-purple"><div class="widget-icon"><i class="fas fa-star"></i></div><div class="widget-info"><h4>Asesmen Sumatif Tuntas</h4><h2>0 <span style="font-size:16px; opacity:0.7; font-weight:500;">/ 0</span></h2></div></div><div class="widget-card wg-red"><div class="widget-icon"><i class="fas fa-award"></i></div><div class="widget-info"><h4>Asesmen Akhir Tuntas</h4><h2>0 <span style="font-size:16px; opacity:0.7; font-weight:500;">/ 0</span></h2></div></div>`;
             wadah.innerHTML = bannerHTML + `<div class="widget-grid">${kontenWidget}</div>`;
         }
-        // --------------------------------------------------------
 
         function bukaHalaman(idHalaman, elBtn) {
             document.querySelectorAll('.halaman').forEach(hal => hal.classList.add('hidden')); document.querySelectorAll('.menu-item').forEach(menu => menu.classList.remove('active'));
@@ -1199,7 +1175,6 @@
         }
 
         async function muatKelolaNilai() {
-            // Anti-cache request
             const res = await fetch('/api/nilai?t=' + new Date().getTime()); const hasil = await res.json();
             const fTa = document.getElementById('filterTaKelola').value; const fSmt = document.getElementById('filterSmtKelola').value; const fKelas = document.getElementById('filterKelolaKelas').value; const fMapel = document.getElementById('filterKelolaMapel').value; const fJenis = document.getElementById('filterKelolaJenis').value;
             if (!fKelas || fKelas === "SEMUA" || !fMapel || fMapel === "SEMUA") { document.querySelector('#tabelKelolaNilai thead').innerHTML = ''; document.querySelector('#tabelKelolaNilai tbody').innerHTML = '<tr><td style="text-align:center; padding:30px; color:#94a3b8;">Silakan pilih Kelas dan Mata Pelajaran terlebih dahulu.</td></tr>'; return; }
@@ -1253,7 +1228,6 @@
             document.querySelector('#tabelKelolaNilai thead').innerHTML = theadHtml; document.querySelector('#tabelKelolaNilai tbody').innerHTML = tbodyHtml;
         }
 
-        // --- FUNGSI BARU UNTUK EDIT/HAPUS KOLOM MASSAL ---
         function bukaModalEditKolom(urutan, topikEncoded, kktp, waktu) {
             const jenis = document.getElementById('filterKelolaJenis').value;
             document.getElementById('lblKolomEditName').innerText = jenis.includes('Akhir') ? jenis : `${jenis} Ke-${urutan}`;
@@ -1293,9 +1267,7 @@
                 if(result.success) { alert("Seluruh data pada kolom tersebut berhasil dihapus!"); tutupModalEditKolom(); muatKelolaNilai(); updateWidgets(userAktif); } else { alert(result.message); }
             } catch(e) { alert("Gagal koneksi ke server."); }
         }
-        // --------------------------------------------------
 
-        // --- FUNGSI LIHAT RESPON ORANG TUA ---
         function lihatResponOrtu(id) {
             const n = window.dataKelolaNilaiCache.find(x => x.id === id); if(!n) return;
             let html = '';
@@ -1321,7 +1293,6 @@
             }
         }
         function tutupModalResponOrtu() { document.getElementById('modalResponOrtu').classList.add('hidden'); }
-        // --------------------------------------------------
 
         function editNilaiGuru(id) {
             const n = window.dataKelolaNilaiCache.find(x => x.id === id); if(!n) return;
