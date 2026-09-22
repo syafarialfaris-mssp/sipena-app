@@ -234,7 +234,6 @@
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Akademik Kelas</p>
                 <div class="menu-item active" onclick="bukaHalaman('adminDataSiswa', this)"><i class="fas fa-users"></i> Data Murid Kelas</div>
                 <div class="menu-item" onclick="bukaHalaman('guruInputNilai', this)"><i class="fas fa-edit"></i> Input Nilai Baru</div>
-                <!-- PERBAIKAN: Badge notif angka dihapus -->
                 <div class="menu-item" onclick="bukaHalaman('guruKelolaNilai', this)"><i class="fas fa-tasks"></i> Kelola & Remedial</div>
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 20px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Laporan</p>
                 <div class="menu-item" onclick="bukaHalaman('laporanRekap', this)"><i class="fas fa-file-invoice"></i> Laporan Kelas</div>
@@ -593,6 +592,7 @@
                     <div id="areaCetakPDF" style="background: white; color: black; padding: 40px; border: 1px solid #e2e8f0; border-radius: 24px; overflow-x:auto; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
                         <div style="text-align: center; margin-bottom: 40px;"><h2 style="margin: 0 0 5px; font-weight: 700; font-size: 26px;">LAPORAN <span id="judulJenisLaporan">NILAI TUGAS HARIAN</span></h2><p style="margin: 0; color: #64748b; font-size: 15px;">SIPENA - TP <span id="lblTaCetak"></span> Semester <span id="lblSmtCetak"></span> <span id="lblFilterCetak" style="font-weight: bold; color: var(--accent);"></span></p></div>
                         
+                        <!-- Wrapper khusus tabel laporan untuk render PDF tanpa terpotong -->
                         <div id="wadahTabelLaporan" style="overflow-x: auto; width: 100%;">
                             <table id="tabelLaporan" style="font-size: 13px; width: 100%;"><thead></thead><tbody></tbody></table>
                         </div>
@@ -650,6 +650,7 @@
         let hapusFileUtama = false, hapusFileRem1 = false, hapusFileRem2 = false, hapusFileRem3 = false;
         let tempMengajarGuru = []; let dataSiswaInputAktif = []; 
         let tipeLaporanAktif = 'Tugas Harian'; let tipeLaporanOrtuAktif = 'Tugas Harian'; let ortuMapelAktif = "";
+        let notifInterval = null; 
         window.dataKelolaNilaiCache = [];
         window.laporanDataExport = []; 
         const curYear = new Date().getFullYear(); const startYear = 2026;
@@ -888,7 +889,11 @@
             if (!user.role && user.nisn) user.role = 'ortu';
             userAktif = user;
             document.getElementById('loginPage').style.display = 'none'; document.getElementById('dashboardPage').style.display = 'flex'; 
-            const namaUtama = user.nama || user.nama_siswa; document.getElementById('namaUserLog').innerText = namaUtama; document.getElementById('roleUserLog').innerText = (user.role || 'ORTU').toUpperCase(); document.getElementById('infoUserDeskripsi').style.display = 'block';
+            
+            const namaUtama = user.nama || user.nama_siswa; 
+            document.getElementById('namaUserLog').innerText = namaUtama; 
+            document.getElementById('roleUserLog').innerText = (user.role || 'ORTU').toUpperCase(); 
+            document.getElementById('infoUserDeskripsi').style.display = 'block';
 
             if (user.avatar && user.avatar !== "") { document.getElementById('imgAvatar').src = user.avatar; document.getElementById('imgAvatar').style.display = 'block'; document.getElementById('inisialAvatar').style.display = 'none'; } 
             else { document.getElementById('imgAvatar').style.display = 'none'; document.getElementById('inisialAvatar').style.display = 'flex'; document.getElementById('inisialAvatar').innerText = namaUtama.charAt(0).toUpperCase(); }
@@ -904,10 +909,25 @@
             if(user.role !== 'ortu') { updateWidgets(user); } else { updateWidgetsOrtuKosong(); updateNotifOrtu(); }
         }
 
+        // --- PERBAIKAN: Mengubah Teks Sapaan Berdasarkan Role ---
         async function updateWidgets(user) {
             const wadah = document.getElementById('dashboardWidgets'); wadah.innerHTML = ''; 
-            const namaTampil = user.nama || user.nama_siswa || 'Pengguna';
-            const bannerHTML = `<div class="welcome-banner"><div><h1>Welcome Back, ${namaTampil}! 👋</h1><p>Pantau perkembangan akademik, jadwal, dan kelola sistem dengan antarmuka yang lebih segar.</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
+            
+            let judulSapaan = "";
+            let teksDeskripsi = "";
+
+            if (user.role === 'admin') {
+                judulSapaan = `Selamat Datang, ${user.nama}! 👋`;
+                teksDeskripsi = "Pantau perkembangan akademik, jadwal, dan kelola sistem dengan antarmuka yang lebih segar.";
+            } else if (user.role === 'guru') {
+                judulSapaan = `Selamat Datang, ${user.nama}! 👋`;
+                teksDeskripsi = "Pantau perkembangan akademik, jadwal, dan kelola sistem dengan antarmuka yang lebih segar.";
+            } else {
+                judulSapaan = `Selamat Datang, Orang Tua dari ${user.nama_siswa}! 👋`;
+                teksDeskripsi = "Pantau perkembangan nilai akademik anak dengan sistem informasi terintegrasi yang dapat diakses secara online kapanpun dan dimanapun.";
+            }
+
+            const bannerHTML = `<div class="welcome-banner"><div><h1>${judulSapaan}</h1><p>${teksDeskripsi}</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
 
             let kontenWidget = '';
             if (user.role === 'admin') {
@@ -931,18 +951,24 @@
             const asTuntas = as.filter(n => n.status_tuntas && n.status_tuntas.includes('TUNTAS') && !n.status_tuntas.includes('TIDAK')).length;
             const aaTuntas = aa.filter(n => n.status_tuntas && n.status_tuntas.includes('TUNTAS') && !n.status_tuntas.includes('TIDAK')).length;
 
-            const namaTampil = userAktif.nama_siswa || 'Pengguna';
-            const bannerHTML = `<div class="welcome-banner"><div><h1>Welcome Back, ${namaTampil}! 👋</h1><p>Pantau perkembangan akademik, jadwal, dan kelola sistem dengan antarmuka yang lebih segar.</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
+            const judulSapaan = `Selamat Datang, Orang Tua dari ${userAktif.nama_siswa}! 👋`;
+            const teksDeskripsi = "Pantau perkembangan nilai akademik anak dengan sistem informasi terintegrasi yang dapat diakses secara online kapanpun dan dimanapun.";
+            const bannerHTML = `<div class="welcome-banner"><div><h1>${judulSapaan}</h1><p>${teksDeskripsi}</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
+            
             const kontenWidget = `<div class="widget-card wg-blue"><div class="widget-icon"><i class="fas fa-file-alt"></i></div><div class="widget-info"><h4>Total Penilaian</h4><h2>${nilaiAktif.length}</h2></div></div><div class="widget-card wg-green"><div class="widget-icon"><i class="fas fa-check-circle"></i></div><div class="widget-info"><h4>Tugas Harian Tuntas</h4><h2>${thTuntas} <span style="font-size:16px; opacity:0.7; font-weight:500;">/ ${th.length}</span></h2></div></div><div class="widget-card wg-purple"><div class="widget-icon"><i class="fas fa-star"></i></div><div class="widget-info"><h4>Asesmen Sumatif Tuntas</h4><h2>${asTuntas} <span style="font-size:16px; opacity:0.7; font-weight:500;">/ ${as.length}</span></h2></div></div><div class="widget-card wg-red"><div class="widget-icon"><i class="fas fa-award"></i></div><div class="widget-info"><h4>Asesmen Akhir Tuntas</h4><h2>${aaTuntas} <span style="font-size:16px; opacity:0.7; font-weight:500;">/ ${aa.length}</span></h2></div></div>`;
             wadah.innerHTML = bannerHTML + `<div class="widget-grid">${kontenWidget}</div>`;
         }
 
         function updateWidgetsOrtuKosong() {
-            const wadah = document.getElementById('dashboardWidgets'); const namaTampil = userAktif.nama_siswa || 'Pengguna';
-            const bannerHTML = `<div class="welcome-banner"><div><h1>Welcome Back, ${namaTampil}! 👋</h1><p>Pantau perkembangan akademik, jadwal, dan kelola sistem dengan antarmuka yang lebih segar.</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
+            const wadah = document.getElementById('dashboardWidgets'); 
+            const judulSapaan = `Selamat Datang, Orang Tua dari ${userAktif.nama_siswa}! 👋`;
+            const teksDeskripsi = "Pantau perkembangan nilai akademik anak dengan sistem informasi terintegrasi yang dapat diakses secara online kapanpun dan dimanapun.";
+            const bannerHTML = `<div class="welcome-banner"><div><h1>${judulSapaan}</h1><p>${teksDeskripsi}</p></div><i class="fas fa-layer-group" style="font-size: 60px; opacity: 0.3;"></i></div>`;
+            
             const kontenWidget = `<div class="widget-card wg-blue"><div class="widget-icon"><i class="fas fa-file-alt"></i></div><div class="widget-info"><h4>Total Penilaian</h4><h2>0</h2></div></div><div class="widget-card wg-green"><div class="widget-icon"><i class="fas fa-check-circle"></i></div><div class="widget-info"><h4>Tugas Harian Tuntas</h4><h2>0 <span style="font-size:16px; opacity:0.7; font-weight:500;">/ 0</span></h2></div></div><div class="widget-card wg-purple"><div class="widget-icon"><i class="fas fa-star"></i></div><div class="widget-info"><h4>Asesmen Sumatif Tuntas</h4><h2>0 <span style="font-size:16px; opacity:0.7; font-weight:500;">/ 0</span></h2></div></div><div class="widget-card wg-red"><div class="widget-icon"><i class="fas fa-award"></i></div><div class="widget-info"><h4>Asesmen Akhir Tuntas</h4><h2>0 <span style="font-size:16px; opacity:0.7; font-weight:500;">/ 0</span></h2></div></div>`;
             wadah.innerHTML = bannerHTML + `<div class="widget-grid">${kontenWidget}</div>`;
         }
+        // --------------------------------------------------------
 
         function bukaHalaman(idHalaman, elBtn) {
             document.querySelectorAll('.halaman').forEach(hal => hal.classList.add('hidden')); document.querySelectorAll('.menu-item').forEach(menu => menu.classList.remove('active'));
@@ -1173,7 +1199,7 @@
         }
 
         async function muatKelolaNilai() {
-            // Memasang timestamp untuk menghancurkan cache memori browser (Anti Notif Hantu)
+            // Anti-cache request
             const res = await fetch('/api/nilai?t=' + new Date().getTime()); const hasil = await res.json();
             const fTa = document.getElementById('filterTaKelola').value; const fSmt = document.getElementById('filterSmtKelola').value; const fKelas = document.getElementById('filterKelolaKelas').value; const fMapel = document.getElementById('filterKelolaMapel').value; const fJenis = document.getElementById('filterKelolaJenis').value;
             if (!fKelas || fKelas === "SEMUA" || !fMapel || fMapel === "SEMUA") { document.querySelector('#tabelKelolaNilai thead').innerHTML = ''; document.querySelector('#tabelKelolaNilai tbody').innerHTML = '<tr><td style="text-align:center; padding:30px; color:#94a3b8;">Silakan pilih Kelas dan Mata Pelajaran terlebih dahulu.</td></tr>'; return; }
@@ -1452,7 +1478,6 @@
             XLSX.writeFile(wb, `Laporan_SIPENA_${tipeLaporanAktif}.xlsx`); 
         }
 
-        // --- SISTEM CETAK PDF OTOMATIS FIT (DIPERBAIKI) ---
         function eksporPDF() { 
             const btn = event.currentTarget;
             const originalText = btn.innerHTML;
@@ -1467,13 +1492,11 @@
             const oriMaxW = element.style.maxWidth;
             const containerOriOverflow = tabelContainer.style.overflowX;
             
-            // Melepas paksaan scroll sementara agar html2canvas merekam lebar aslinya
             element.style.overflowX = 'visible';
             element.style.width = 'max-content';
             element.style.maxWidth = 'none';
             tabelContainer.style.overflowX = 'visible';
             
-            // Beri jeda 0.5 detik agar DOM benar-benar merenggang sebelum difoto
             setTimeout(() => {
                 const totalWidth = element.scrollWidth;
                 const isWide = totalWidth > 900; 
@@ -1487,7 +1510,6 @@
                 };
                 
                 html2pdf().set(opt).from(element).save().then(() => {
-                    // Kembalikan ke tampilan awal setelah selesai download
                     element.style.overflowX = oriOverflow;
                     element.style.width = oriWidth;
                     element.style.maxWidth = oriMaxW;
@@ -1500,7 +1522,6 @@
         }
         
         async function muatLaporanGlobal() {
-            // Ditambahkan anti-cache ?t=...
             const res = await fetch('/api/nilai?t=' + new Date().getTime()); const hasil = await res.json();
             const filterTa = document.getElementById('filterTaLaporan').value; const filterSmt = document.getElementById('filterSmtLaporan').value; let kelasTerpilih = document.getElementById('filterLapKelas').value; let mapelTerpilih = document.getElementById('filterLapMapel').value;
             
@@ -1523,7 +1544,6 @@
                 groupedData[key].scores[colKey] = { skor: skorFinal, status: n.status_tuntas }; groupedData[key].total += Number(skorFinal); groupedData[key].count += 1;
             });
 
-            // Menyiapkan Data Bersih Khusus Untuk Excel
             let exportDataArray = [];
             let excelHeader = ["NISN", "Nama Murid", "Kelas", "Mata Pelajaran"];
             urutanKeys.forEach(col => excelHeader.push(col));
@@ -1543,7 +1563,7 @@
                     urutanKeys.forEach(col => {
                         let cell = row.scores[col];
                         if (cell) { 
-                            excelRowData.push(cell.skor); // Data Excel murni hanya angkanya saja
+                            excelRowData.push(cell.skor); 
                             let color = cell.status && cell.status.includes('TUNTAS') && !cell.status.includes('TIDAK') ? '#10b981' : '#ef4444'; 
                             tbodyHtml += `<td><b style="font-size:16px;">${cell.skor}</b><br class="excel-remove"><span class="excel-remove" style="font-size:9px; color:${color}; font-weight:bold;">${cell.status||'-'}</span></td>`; 
                         } 
@@ -1554,13 +1574,13 @@
                     });
                     let avg = Math.round(row.total / row.count); 
                     excelRowData.push(avg); 
-                    exportDataArray.push(excelRowData); // Simpan baris bersih ke memory Excel
+                    exportDataArray.push(excelRowData); 
 
                     let avgColor = avg >= 70 ? '#10b981' : '#ef4444'; 
                     tbodyHtml += `<td><b style="font-size:16px; color:${avgColor};">${avg}</b></td></tr>`;
                 });
             }
-            window.laporanDataExport = exportDataArray; // Menjadikan array Excel siap diakses tombol export
+            window.laporanDataExport = exportDataArray; 
             document.querySelector('#tabelLaporan thead').innerHTML = theadHtml; document.querySelector('#tabelLaporan tbody').innerHTML = tbodyHtml;
 
             // GRAFIK ADMIN/GURU
