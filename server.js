@@ -34,7 +34,7 @@ async function uploadToCloudinary(base64Data, folderName) {
 }
 
 // ==========================================
-// 2. KONEKSI MONGODB (ANTI-CRASH SERVERLESS)
+// 2. KONEKSI MONGODB
 // ==========================================
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/sipena";
 
@@ -101,7 +101,15 @@ const NilaiSchema = new mongoose.Schema({
 NilaiSchema.set('toJSON', { transform });
 const Nilai = mongoose.models.Nilai || mongoose.model('Nilai', NilaiSchema);
 
-// Inisialisasi Data Default
+// FITUR BARU: SCHEMA PENGUMUMAN KELAS
+const PengumumanSchema = new mongoose.Schema({
+    kelas: String, mapel: String, nama_guru: String, email_guru: String,
+    isi_pesan: String, lampiran_file: String, nama_file: String, waktu_kirim: String,
+    dibaca_oleh: { type: [String], default: [] } // Array NISN yang sudah baca
+});
+PengumumanSchema.set('toJSON', { transform });
+const Pengumuman = mongoose.models.Pengumuman || mongoose.model('Pengumuman', PengumumanSchema);
+
 const initDB = async () => {
     try {
         let sys = await System.findOne();
@@ -122,7 +130,7 @@ const initDB = async () => {
                 { nisn: "333444", nama_siswa: "Siti Aisyah", jk: "Perempuan", kelas: "7.2", no_hp_ortu: "08998877" }
             ]);
         }
-    } catch (err) { console.log("DB Init berjalan:", err.message); }
+    } catch (err) { console.log("DB Init:", err.message); }
 };
 
 // ==========================================
@@ -175,6 +183,34 @@ app.post('/api/import-siswa', async (req, res) => {
 });
 app.put('/api/siswa/:nisn', async (req, res) => { const up = await Siswa.findOneAndUpdate({ nisn: req.params.nisn }, req.body); if (up) res.json({ success: true, message: "Data Murid diupdate!" }); else res.json({ success: false, message: "Murid tidak ditemukan" }); });
 app.delete('/api/siswa/:nisn', async (req, res) => { await Siswa.findOneAndDelete({ nisn: req.params.nisn }); await Nilai.deleteMany({ nisn: req.params.nisn }); res.json({ success: true, message: "Data Murid dihapus permanen!" }); });
+
+// API PENGUMUMAN
+app.get('/api/pengumuman', async (req, res) => {
+    const p = await Pengumuman.find().sort({ _id: -1 }); // Sorting dari terbaru
+    res.json({ success: true, data: p });
+});
+app.post('/api/pengumuman', async (req, res) => {
+    const { kelas, mapel, nama_guru, email_guru, isi_pesan, lampiran_file, nama_file, waktu_kirim } = req.body;
+    let urlLampiran = null;
+    if (lampiran_file && lampiran_file.startsWith('data:')) {
+        urlLampiran = await uploadToCloudinary(lampiran_file, 'pengumuman');
+    }
+    await Pengumuman.create({ kelas, mapel, nama_guru, email_guru, isi_pesan, lampiran_file: urlLampiran, nama_file, waktu_kirim });
+    res.json({ success: true, message: "Pengumuman berhasil dikirim!" });
+});
+app.delete('/api/pengumuman/:id', async (req, res) => {
+    await Pengumuman.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: "Pengumuman dihapus!" });
+});
+app.put('/api/pengumuman/baca', async (req, res) => {
+    const { nisn, id_pengumuman } = req.body; 
+    await Pengumuman.updateMany(
+        { _id: { $in: id_pengumuman }, dibaca_oleh: { $ne: nisn } },
+        { $push: { dibaca_oleh: nisn } }
+    );
+    res.json({ success: true });
+});
+
 app.post('/api/input-nilai-bulk', async (req, res) => {
     const dataArray = req.body; const sys = await System.findOne(); const payload = [];
     for (let item of dataArray) {
@@ -187,7 +223,6 @@ app.post('/api/input-nilai-bulk', async (req, res) => {
 app.get('/api/nilai', async (req, res) => { const nilais = await Nilai.find(); res.json({ success: true, data: nilais }); });
 app.get('/api/nilai/:nisn', async (req, res) => { const nilais = await Nilai.find({ nisn: req.params.nisn }); res.json({ success: true, data: nilais }); });
 
-// --- API BARU UNTUK EDIT METADATA KOLOM MASAL ---
 app.put('/api/nilai/bulk-edit-meta', async (req, res) => {
     const { tahunAjaran, semester, kelas, mapel, jenis, urutan, topik, kktp, waktu_pelaksanaan } = req.body;
     try {
@@ -195,20 +230,15 @@ app.put('/api/nilai/bulk-edit-meta', async (req, res) => {
         for (let n of records) {
             n.topik = topik; n.kktp = Number(kktp); n.waktu_pelaksanaan = waktu_pelaksanaan;
             let skorTertinggi = n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : (n.remedial_2 !== null && n.remedial_2 !== undefined ? n.remedial_2 : (n.remedial_1 !== null && n.remedial_1 !== undefined ? n.remedial_1 : n.skor));
-            n.status_tuntas = skorTertinggi >= n.kktp ? "TUNTAS" : "TIDAK TUNTAS";
-            await n.save();
+            n.status_tuntas = skorTertinggi >= n.kktp ? "TUNTAS" : "TIDAK TUNTAS"; await n.save();
         }
         res.json({ success: true, message: "Pengaturan kolom nilai berhasil diperbarui untuk semua murid!" });
     } catch (err) { res.json({ success: false, message: err.message }); }
 });
 
-// --- API BARU UNTUK HAPUS KOLOM MASAL ---
 app.delete('/api/nilai/bulk-delete-column', async (req, res) => {
     const { tahunAjaran, semester, kelas, mapel, jenis, urutan } = req.body;
-    try {
-        await Nilai.deleteMany({ tahunAjaran, semester, kelas, mapel, jenis, urutan });
-        res.json({ success: true, message: "Seluruh data murid pada kolom penilaian tersebut berhasil dihapus!" });
-    } catch (err) { res.json({ success: false, message: err.message }); }
+    try { await Nilai.deleteMany({ tahunAjaran, semester, kelas, mapel, jenis, urutan }); res.json({ success: true, message: "Seluruh data murid pada kolom penilaian tersebut berhasil dihapus!" }); } catch (err) { res.json({ success: false, message: err.message }); }
 });
 
 app.put('/api/nilai/:id/edit', async (req, res) => {
