@@ -101,11 +101,10 @@ const NilaiSchema = new mongoose.Schema({
 NilaiSchema.set('toJSON', { transform });
 const Nilai = mongoose.models.Nilai || mongoose.model('Nilai', NilaiSchema);
 
-// FITUR BARU: SCHEMA PENGUMUMAN KELAS
 const PengumumanSchema = new mongoose.Schema({
     kelas: String, mapel: String, nama_guru: String, email_guru: String,
     isi_pesan: String, lampiran_file: String, nama_file: String, waktu_kirim: String,
-    dibaca_oleh: { type: [String], default: [] } // Array NISN yang sudah baca
+    dibaca_oleh: { type: [String], default: [] } 
 });
 PengumumanSchema.set('toJSON', { transform });
 const Pengumuman = mongoose.models.Pengumuman || mongoose.model('Pengumuman', PengumumanSchema);
@@ -186,7 +185,7 @@ app.delete('/api/siswa/:nisn', async (req, res) => { await Siswa.findOneAndDelet
 
 // API PENGUMUMAN
 app.get('/api/pengumuman', async (req, res) => {
-    const p = await Pengumuman.find().sort({ _id: -1 }); // Sorting dari terbaru
+    const p = await Pengumuman.find().sort({ _id: -1 });
     res.json({ success: true, data: p });
 });
 app.post('/api/pengumuman', async (req, res) => {

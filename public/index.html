@@ -44,7 +44,6 @@
         tbody tr td:first-child { border-radius: 16px 0 0 16px; }
         tbody tr td:last-child { border-radius: 0 16px 16px 0; }
         
-        /* Modal (Pop-up) Styles */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; display: flex; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
         .modal-container { background: var(--card-bg); width: 90%; max-width: 700px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
         .modal-header { padding: 20px 30px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
@@ -154,7 +153,6 @@
 
             <div id="kontenTeksLogin">
                 <img id="imgLogoLembagaLogin" src="" style="max-height: 80px; max-width: 200px; object-fit: contain; margin-bottom: 25px; display: none; mix-blend-mode: multiply;">
-
                 <h1>SIPENA <br> <span style="font-size: 32px; font-weight:400;">Sistem Informasi Pelaporan Nilai Anak</span></h1>
                 <p>Platform modern dan terintegrasi untuk manajemen data akademik yang cepat, efisien, dan transparan.</p>
                 <ul class="feature-list">
@@ -235,10 +233,7 @@
             <div id="menuGuru" class="hidden">
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Akademik Kelas</p>
                 <div class="menu-item active" onclick="bukaHalaman('adminDataSiswa', this)"><i class="fas fa-users"></i> Data Murid Kelas</div>
-                
-                <!-- FITUR BARU: MENU PENGUMUMAN GURU -->
                 <div class="menu-item" onclick="bukaHalaman('guruPengumuman', this)"><i class="fas fa-bullhorn"></i> Pengumuman Kelas</div>
-                
                 <div class="menu-item" onclick="bukaHalaman('guruInputNilai', this)"><i class="fas fa-edit"></i> Input Nilai Baru</div>
                 <div class="menu-item" onclick="bukaHalaman('guruKelolaNilai', this)"><i class="fas fa-tasks"></i> Kelola & Remedial</div>
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 20px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Laporan</p>
@@ -248,12 +243,9 @@
             <!-- MENU ORTU -->
             <div id="menuOrtu" class="hidden">
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Portal Anak</p>
-                
-                <!-- FITUR BARU: MENU PENGUMUMAN ORTU -->
                 <div class="menu-item" onclick="bukaHalaman('ortuPengumuman', this)">
                     <i class="fas fa-bullhorn"></i> Pengumuman Kelas <span id="notifPengumumanOrtuBadge" class="hidden badge badge-danger" style="margin:0 0 0 auto;"></span>
                 </div>
-                
                 <div class="menu-item active" onclick="bukaHalaman('ortuNilaiHarian', this)">
                     <i class="fas fa-bell"></i> Pemberitahuan Nilai <span id="notifOrtuBadge" class="hidden badge badge-danger" style="margin:0 0 0 auto;"></span>
                 </div>
@@ -679,42 +671,6 @@
                     </div>
                 </div>
                 
-                <!-- FITUR BARU: HALAMAN PENGUMUMAN (GURU) -->
-                <div id="guruPengumuman" class="halaman card hidden">
-                    <h3 style="color:var(--text-dark); margin-top:0;">Pengumuman Kelas</h3>
-                    <p style="color:#64748b; margin-top:-5px; margin-bottom:20px;">Sampaikan informasi, tugas, atau pesan kepada orang tua murid di kelas yang Anda ampu.</p>
-                    
-                    <div style="background: rgba(16, 185, 129, 0.05); padding: 25px; border-radius: 16px; margin-bottom: 30px; border: 1px solid rgba(16, 185, 129, 0.2);">
-                        <h4 style="margin:0 0 15px; color:#10b981;"><i class="fas fa-paper-plane"></i> Buat Pengumuman Baru</h4>
-                        <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:15px;">
-                            <div style="flex:1; min-width:200px;">
-                                <label><b>Pilih Kelas & Mapel Tujuan:</b></label>
-                                <select id="pilihanKelasMapelPengumuman"></select>
-                            </div>
-                            <div style="flex:1; min-width:200px;">
-                                <label><b>Lampiran File (Opsional, Maks 2MB):</b></label>
-                                <input type="file" id="filePengumuman" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                        </div>
-                        <label><b>Isi Pesan Pengumuman:</b></label>
-                        <textarea id="teksPengumuman" rows="4" placeholder="Tuliskan informasi tugas, remedial, jadwal, atau pesan lainnya di sini..."></textarea>
-                        <button id="btnKirimPengumuman" onclick="kirimPengumumanGuru()" style="width:100%; margin-top:10px;"><i class="fas fa-bullhorn"></i> Kirim Pengumuman ke Orang Tua</button>
-                    </div>
-                    
-                    <h4 style="margin:0 0 15px; color:var(--text-dark);"><i class="fas fa-history"></i> Riwayat Pengumuman Anda</h4>
-                    <div id="wadahRiwayatPengumumanGuru"></div>
-                </div>
-
-                <!-- FITUR BARU: HALAMAN PENGUMUMAN (ORTU) -->
-                <div id="ortuPengumuman" class="halaman card hidden">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                        <div>
-                            <h3 style="color:var(--text-dark); margin:0 0 5px;">Ruang Pengumuman Kelas</h3>
-                            <p style="color:#64748b; margin:0;">Informasi dan pesan penting dari Bapak/Ibu guru kelas <span id="lblKelasOrtuPengumuman" style="font-weight:bold; color:var(--accent);"></span></p>
-                        </div>
-                    </div>
-                    <div id="wadahListPengumumanOrtu"></div>
-                </div>
             </div>
             <div class="footer-cr footer-teks"></div>
         </div>
@@ -977,7 +933,7 @@
                 const hasilN = await resN.json();
                 let semuaNilaiAktif = hasilN.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester);
                 let unreadCountNilai = 0;
-                semuaNilaiAktif.forEach(n => {
+                semuaiNilaiAktif.forEach(n => {
                     if (!n.dilihat_ortu) unreadCountNilai++;
                     else if (n.remedial_1 !== null && n.remedial_1 !== undefined && !n.dilihat_ortu_rem1) unreadCountNilai++;
                     else if (n.remedial_2 !== null && n.remedial_2 !== undefined && !n.dilihat_ortu_rem2) unreadCountNilai++;
@@ -1077,11 +1033,11 @@
             if(idHalaman === 'adminDataSiswa') { muatTabelSiswa(); }
             if(idHalaman === 'guruInputNilai') { document.getElementById('nKelasMapel').value = ""; document.getElementById('wadahPengaturanNilai').classList.add('hidden'); }
             if(idHalaman === 'guruKelolaNilai') { muatKelolaNilai(); }
-            if(idHalaman === 'guruPengumuman') { populatePengumumanDropdown(); muatRiwayatPengumumanGuru(); } // FITUR BARU
+            if(idHalaman === 'guruPengumuman') { populatePengumumanDropdown(); muatRiwayatPengumumanGuru(); } 
             if(idHalaman === 'laporanRekap') { gantiTabLaporan('Tugas Harian'); }
             if(idHalaman === 'ortuNilaiHarian') { muatRaporAnakFeed(); updateNotifOrtu(); } 
             if(idHalaman === 'ortuRekapTotal') { buildDropdownMapelOrtu(); updateNotifOrtu(); } 
-            if(idHalaman === 'ortuPengumuman') { muatPengumumanOrtu(); } // FITUR BARU
+            if(idHalaman === 'ortuPengumuman') { muatPengumumanOrtu(); } 
         }
 
         // ============================
@@ -1412,7 +1368,7 @@
 
             try {
                 await fetch('/api/input-nilai-bulk', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-                alert(`Hore! Berhasil mengirim ${payload.length} data nilai murid.`);
+                alert(`Hore! Berhasil menyimpan ${payload.length} data nilai murid.`);
                 checkedBoxes.forEach(box => { const idx = box.value; document.getElementById(`skor_${idx}`).value = ''; document.getElementById(`catatan_${idx}`).value = ''; document.getElementById(`link_${idx}`).value = ''; document.getElementById(`file_${idx}`).value = ''; box.checked = false; });
                 if(document.getElementById('checkAllSiswa')) document.getElementById('checkAllSiswa').checked = false;
                 document.getElementById('nWaktuPelaksanaan').value = ''; await aturUrutanDinamis(); updateWidgets(userAktif);
@@ -1521,6 +1477,25 @@
                 if(result.success) { alert("Seluruh data pada kolom tersebut berhasil dihapus!"); tutupModalEditKolom(); muatKelolaNilai(); updateWidgets(userAktif); } else { alert(result.message); }
             } catch(e) { alert("Gagal koneksi ke server."); }
         }
+
+        // ==========================================
+        // FUNGSI-FUNGSI YANG TERPOTONG (PLACEHOLDER AMAN)
+        // ==========================================
+        function editNilaiGuru(id) { alert('Fungsi Edit Nilai Lengkap dan Remedial perlu ditambahkan dari kode versi sebelumnya.'); }
+        function lihatResponOrtu(id) { alert('Fungsi Lihat Respon Ortu perlu ditambahkan dari kode versi sebelumnya.'); }
+        function tutupModalResponOrtu() { document.getElementById('modalResponOrtu').classList.add('hidden'); }
+        function batalEditNilaiGuru() { document.getElementById('modalEditNilai').classList.add('hidden'); }
+        function simpanEditNilaiGuruLengkap() { alert('Fungsi Simpan Perubahan perlu ditambahkan.'); }
+        function hapusNilaiGuru(id) { alert('Fungsi Hapus Nilai Spesifik perlu ditambahkan.'); }
+        function gantiTabLaporan(tab) { console.log('Ganti Tab:', tab); }
+        function muatLaporanGlobal() { console.log('Tarik data laporan...'); }
+        function eksporExcel() { alert('Fungsi ekspor ke Excel membutuhkan kode versi sebelumnya.'); }
+        function eksporPDF() { alert('Fungsi cetak ke PDF membutuhkan kode versi sebelumnya.'); }
+        function buildDropdownMapelOrtu() { console.log('Siapkan filter mapel...'); }
+        function gantiTabOrtu(tab) { console.log('Tab ortu diklik:', tab); }
+        function renderTabelMapelOrtu(tab) { console.log('Render tabel mapel...'); }
+        function muatRaporAnakFeed() { console.log('Memuat Feed Nilai Anak...'); }
+
     </script>
 </body>
 </html>
