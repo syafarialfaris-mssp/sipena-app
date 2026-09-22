@@ -44,6 +44,7 @@
         tbody tr td:first-child { border-radius: 16px 0 0 16px; }
         tbody tr td:last-child { border-radius: 0 16px 16px 0; }
         
+        /* Modal (Pop-up) Styles */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; display: flex; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
         .modal-container { background: var(--card-bg); width: 90%; max-width: 700px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
         .modal-header { padding: 20px 30px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
@@ -153,6 +154,7 @@
 
             <div id="kontenTeksLogin">
                 <img id="imgLogoLembagaLogin" src="" style="max-height: 80px; max-width: 200px; object-fit: contain; margin-bottom: 25px; display: none; mix-blend-mode: multiply;">
+
                 <h1>SIPENA <br> <span style="font-size: 32px; font-weight:400;">Sistem Informasi Pelaporan Nilai Anak</span></h1>
                 <p>Platform modern dan terintegrasi untuk manajemen data akademik yang cepat, efisien, dan transparan.</p>
                 <ul class="feature-list">
@@ -233,9 +235,11 @@
             <div id="menuGuru" class="hidden">
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Akademik Kelas</p>
                 <div class="menu-item active" onclick="bukaHalaman('adminDataSiswa', this)"><i class="fas fa-users"></i> Data Murid Kelas</div>
+                
                 <div class="menu-item" onclick="bukaHalaman('guruPengumuman', this)"><i class="fas fa-bullhorn"></i> Pengumuman Kelas</div>
                 <div class="menu-item" onclick="bukaHalaman('guruInputNilai', this)"><i class="fas fa-edit"></i> Input Nilai Baru</div>
                 <div class="menu-item" onclick="bukaHalaman('guruKelolaNilai', this)"><i class="fas fa-tasks"></i> Kelola & Remedial</div>
+                
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 20px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Laporan</p>
                 <div class="menu-item" onclick="bukaHalaman('laporanRekap', this)"><i class="fas fa-file-invoice"></i> Laporan Kelas</div>
             </div>
@@ -243,6 +247,7 @@
             <!-- MENU ORTU -->
             <div id="menuOrtu" class="hidden">
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Portal Anak</p>
+                
                 <div class="menu-item" onclick="bukaHalaman('ortuPengumuman', this)">
                     <i class="fas fa-bullhorn"></i> Pengumuman Kelas <span id="notifPengumumanOrtuBadge" class="hidden badge badge-danger" style="margin:0 0 0 auto;"></span>
                 </div>
@@ -280,7 +285,7 @@
             <div class="content">
                 <div id="dashboardWidgets"></div>
 
-                <!-- FITUR BARU: HALAMAN PENGUMUMAN (GURU) -->
+                <!-- HALAMAN PENGUMUMAN (GURU) -->
                 <div id="guruPengumuman" class="halaman card hidden">
                     <h3 style="color:var(--text-dark); margin-top:0;">Pengumuman Kelas</h3>
                     <p style="color:#64748b; margin-top:-5px; margin-bottom:20px;">Sampaikan informasi, tugas, atau pesan kepada orang tua murid di kelas yang Anda ampu.</p>
@@ -306,7 +311,7 @@
                     <div id="wadahRiwayatPengumumanGuru"></div>
                 </div>
 
-                <!-- FITUR BARU: HALAMAN PENGUMUMAN (ORTU) -->
+                <!-- HALAMAN PENGUMUMAN (ORTU) -->
                 <div id="ortuPengumuman" class="halaman card hidden">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                         <div>
@@ -358,9 +363,6 @@
                                 <img id="previewLogoLembagaImg" style="height: 50px; display: none; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">
                                 <button type="button" onclick="hapusPreview('logoLembaga')" class="btn-hapus btn-aksi" style="padding: 10px 15px;"><i class="fas fa-trash"></i> Hapus</button>
                             </div>
-                            <div style="margin-top:15px; padding:15px; background:#fffbeb; border-radius:12px; border:1px solid #fde68a;">
-                                <p style="margin:0; font-size:12px; color:#b45309;"><i class="fas fa-lightbulb"></i> Tips: Gunakan gambar berformat PNG dengan latar belakang transparan agar logo menyatu sempurna dengan antarmuka aplikasi dan halaman login.</p>
-                            </div>
                             <button onclick="simpanPengaturanSistem()" style="width: 100%; margin-top: 20px;"><i class="fas fa-save"></i> Simpan Pengaturan Sistem</button>
                         </div>
                     </div>
@@ -369,9 +371,9 @@
                         <h4 style="margin-top:0; color:var(--text-dark); font-size:15px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;"><i class="fas fa-magic" style="color:var(--accent); margin-right:5px;"></i> Kustomisasi Visual Antarmuka (UI)</h4>
                         <div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom: 20px;">
                             <div style="flex:1; min-width: 300px;">
-                                <label><b>Gaya Huruf Utama (20 Google Fonts Premium):</b></label>
+                                <label><b>Gaya Huruf Utama:</b></label>
                                 <select id="setFont" onchange="document.body.style.fontFamily = this.value;">
-                                    <option value="'Inter', sans-serif">1. Inter (Modern & Clean)</option><option value="'Poppins', sans-serif">2. Poppins (Geometris & Elegan)</option><option value="'Montserrat', sans-serif">3. Montserrat (Tegas & Rapi)</option><option value="'Roboto', sans-serif">4. Roboto (Profesional Standard)</option><option value="'Open Sans', sans-serif">5. Open Sans (Netral)</option><option value="'Lato', sans-serif">6. Lato (Hangat & Estetik)</option><option value="'Nunito', sans-serif">7. Nunito (Lembut & Ramah)</option><option value="'Raleway', sans-serif">8. Raleway (Tipis Artistik)</option><option value="'Quicksand', sans-serif">9. Quicksand (Membulat Dinamis)</option><option value="'Rubik', sans-serif">10. Rubik (Padat & Jelas)</option><option value="'Work Sans', sans-serif">11. Work Sans (Sederhana)</option><option value="'Mulish', sans-serif">12. Mulish (Minimalis & Ringan)</option><option value="'Manrope', sans-serif">13. Manrope (Berani)</option><option value="'Playfair Display', serif">14. Playfair Display (Serif Klasik Mewah)</option><option value="'Lora', serif">15. Lora (Serif Kontemporer)</option><option value="'Merriweather', serif">16. Merriweather (Serif Formal)</option><option value="'Oswald', sans-serif">17. Oswald (Tinggi & Padat)</option><option value="'Fira Sans', sans-serif">18. Fira Sans (Teknologi)</option><option value="'Ubuntu', sans-serif">19. Ubuntu (Futuristik Unik)</option><option value="'Josefin Sans', sans-serif">20. Josefin Sans (Vintage Elegan)</option>
+                                    <option value="'Inter', sans-serif">1. Inter (Modern & Clean)</option><option value="'Poppins', sans-serif">2. Poppins (Geometris & Elegan)</option><option value="'Montserrat', sans-serif">3. Montserrat (Tegas & Rapi)</option><option value="'Roboto', sans-serif">4. Roboto (Profesional Standard)</option><option value="'Open Sans', sans-serif">5. Open Sans (Netral)</option>
                                 </select>
                             </div>
                             <div style="flex:1; min-width: 300px;">
@@ -406,41 +408,9 @@
                                 <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #e11d48;"></span><span class="tc-title">Classroom Rose</span></div><span class="tc-badge hidden">AKTIF</span></div>
                                 <div class="tc-palette"><span class="color-circle" style="background: #ffe4e6;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #e11d48;"></span><span class="color-circle" style="background: #881337;"></span></div>
                             </div>
-                            <div class="theme-card" id="cardTheme_golden" onclick="setTemaGlobal('golden')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #d97706;"></span><span class="tc-title">Golden Amber</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #fef3c7;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #d97706;"></span><span class="color-circle" style="background: #3e2723;"></span></div>
-                            </div>
-                            <div class="theme-card" id="cardTheme_oceanic" onclick="setTemaGlobal('oceanic')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #06b6d4;"></span><span class="tc-title">Oceanic Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #e0f2fe;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #06b6d4;"></span><span class="color-circle" style="background: #0f172a;"></span></div>
-                            </div>
-                            <div class="theme-card" id="cardTheme_lavender" onclick="setTemaGlobal('lavender')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #8b5cf6;"></span><span class="tc-title">Royal Lavender</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #f5f3ff;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #8b5cf6;"></span><span class="color-circle" style="background: #4c1d95;"></span></div>
-                            </div>
-                            <div class="theme-card" id="cardTheme_teal" onclick="setTemaGlobal('teal')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #14b8a6;"></span><span class="tc-title">Teal Tranquility</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #ccfbf1;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #14b8a6;"></span><span class="color-circle" style="background: #115e59;"></span></div>
-                            </div>
-                            <div class="theme-card" id="cardTheme_minimalist" onclick="setTemaGlobal('minimalist')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #64748b;"></span><span class="tc-title">Clean Minimalist</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #64748b;"></span><span class="color-circle" style="background: #334155;"></span></div>
-                            </div>
-                            <div class="theme-card" id="cardTheme_nordic" onclick="setTemaGlobal('nordic')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #3b82f6;"></span><span class="tc-title">Nordic Blue</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #e0e7ff;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #3b82f6;"></span><span class="color-circle" style="background: #1e3a8a;"></span></div>
-                            </div>
-                            <div class="theme-card" id="cardTheme_sunset" onclick="setTemaGlobal('sunset')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #ea580c;"></span><span class="tc-title">Warm Sunset</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #ffedd5;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #ea580c;"></span><span class="color-circle" style="background: #431407;"></span></div>
-                            </div>
                             <div class="theme-card" id="cardTheme_kemenag" onclick="setTemaGlobal('kemenag')">
                                 <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #d4af37;"></span><span class="tc-title">Hijau Kemenag</span></div><span class="tc-badge hidden">AKTIF</span></div>
                                 <div class="tc-palette"><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #d4af37;"></span><span class="color-circle" style="background: #065f46;"></span></div>
-                            </div>
-                            <div class="theme-card" id="cardTheme_enterprise" onclick="setTemaGlobal('enterprise')">
-                                <div class="tc-header"><div class="tc-title-wrap"><span class="tc-dot" style="background: #2563eb;"></span><span class="tc-title">Dark Enterprise</span></div><span class="tc-badge hidden">AKTIF</span></div>
-                                <div class="tc-palette"><span class="color-circle" style="background: #f8fafc;"></span><span class="color-circle" style="background: #ffffff;"></span><span class="color-circle" style="background: #2563eb;"></span><span class="color-circle" style="background: #0a192f;"></span></div>
                             </div>
                         </div>
                         <button onclick="simpanPengaturanSistem()" style="width: 100%; margin-top: 25px;"><i class="fas fa-save"></i> Simpan Pengaturan Sistem</button>
@@ -455,11 +425,6 @@
                             <input type="text" id="setAdminPass">
                             <label><b>Nomor WhatsApp Layanan (Untuk Pendaftaran Ortu di Login):</b></label>
                             <div class="input-group"><i class="fab fa-whatsapp"></i><input type="text" id="setAdminWA" placeholder="Contoh: 6281234567890"></div>
-                            <label><b>Format Pesan (Template) WhatsApp Pendaftaran:</b></label>
-                            <textarea id="setAdminWATemplate" rows="6" placeholder="Masukkan format pendaftaran di sini..."></textarea>
-                            <div style="margin-top:20px; padding:15px; background:#fef2f2; border-radius:12px; border:1px solid #fecaca;">
-                                <p style="margin:0; font-size:12px; color:#b91c1c;"><i class="fas fa-exclamation-triangle"></i> <b>PERHATIAN PENTING:</b> Pastikan Anda menyimpan atau mencatat email dan password baru ini dengan baik. Jika hilang, Anda tidak dapat memulihkan akses ke halaman Sistem Admin!</p>
-                            </div>
                             <button onclick="simpanPengaturanSistem()" style="width: 100%; margin-top: 20px;"><i class="fas fa-save"></i> Simpan Pengaturan Sistem</button>
                         </div>
                     </div>
@@ -670,7 +635,6 @@
                         <div style="min-width: 600px;"><canvas id="grafikAnak"></canvas></div>
                     </div>
                 </div>
-                
             </div>
             <div class="footer-cr footer-teks"></div>
         </div>
@@ -679,11 +643,14 @@
     <!-- SEMUA MODAL -->
     <div id="modalGuru" class="modal-overlay hidden"><div class="modal-container"><div class="modal-header"><h3 id="modalGuruTitle">Tambah Data Guru</h3><button class="btn-close" onclick="tutupModalGuru()"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="display: flex; gap: 20px; flex-wrap:wrap;"><div style="flex:1; min-width:250px;"><input type="hidden" id="gIdEdit"><label>Nama Lengkap Guru:</label><input type="text" id="gNama" placeholder="Contoh: Budi Santoso, S.Pd"><label>Email Login:</label><input type="email" id="gEmail" placeholder="budi@sipena.com"><label>Password:</label><input type="text" id="gPass" placeholder="123456"></div><div style="flex:1; min-width:250px;"><label><b>Pemetaan Kelas & Mapel:</b></label><div style="display:flex; gap:10px;"><select id="gKelas" style="flex:1;"><option value="">-- Kelas --</option></select><select id="gMapel" style="flex:2;"><option value="">-- Mata Pelajaran --</option></select></div><button onclick="tambahDaftarMengajar()" style="background:#10b981; width:100%; margin-bottom:15px;"><i class="fas fa-plus"></i> Tambah Ke Pemetaan</button><div id="wadahDaftarMengajar" style="margin-bottom:10px; min-height: 40px; background: white; border: 2px dashed #cbd5e1; padding: 15px; border-radius: 16px;"></div></div></div></div><div class="modal-footer"><button onclick="tutupModalGuru()" style="background:#64748b; padding:10px 20px;">Batal</button><button id="btnSimpanGuru" onclick="simpanGuruManual()" style="background:#10b981; padding:10px 20px;"><i class="fas fa-save"></i> SIMPAN</button></div></div></div>
     <div id="modalSiswa" class="modal-overlay hidden"><div class="modal-container"><div class="modal-header"><h3 id="modalSiswaTitle">Tambah Data Murid</h3><button class="btn-close" onclick="tutupModalSiswa()"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="display: flex; gap: 15px; flex-wrap: wrap;"><div style="flex:1; min-width: 150px;"><label>NISN:</label><input type="text" id="sNisn" placeholder="NISN (Wajib)"></div><div style="flex:2; min-width: 250px;"><label>Nama Lengkap Murid:</label><input type="text" id="sNama" placeholder="Nama Lengkap"></div><div style="flex:1; min-width: 120px;"><label>L/P:</label><select id="sJk"><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div><div style="flex:1; min-width: 150px;"><label>Kelas:</label><select id="sKelas"><option value="">-- Pilih --</option></select></div><div style="flex:1.5; min-width: 200px;"><label>No HP Ortu (WA):</label><input type="text" id="sHp" placeholder="08..."></div></div></div><div class="modal-footer"><button onclick="tutupModalSiswa()" style="background:#64748b; padding:10px 20px;">Batal</button><button id="btnSimpanSiswa" onclick="simpanSiswaManual()" class="btn-success" style="padding:10px 20px;"><i class="fas fa-save"></i> SIMPAN</button></div></div></div>
+    
     <div id="modalEditNilai" class="modal-overlay hidden"><div class="modal-container" style="max-width: 900px;"><div class="modal-header"><h3 style="margin:0; color:var(--text-dark); font-size:18px;"><i class="fas fa-edit" style="color:var(--accent); margin-right:8px;"></i> Edit Komprehensif Nilai & Remedial</h3><button class="btn-close" onclick="batalEditNilaiGuru()"><i class="fas fa-times"></i></button></div><div class="modal-body" style="background: #f8fafc;"><div style="display:flex; gap:15px; flex-wrap: wrap; margin-bottom: 20px;"><input type="hidden" id="edId"><div style="flex:2; min-width: 200px;"><label>Nama Murid:</label><input type="text" id="edNama" readonly style="background:#e2e8f0; font-weight:bold;"></div><div style="flex:1; min-width: 150px;"><label>Update KKTP:</label><input type="number" id="edKktp" min="0" max="100"></div></div><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;"><div class="rem-box"><h5><i class="fas fa-flag"></i> Nilai Utama (Awal)</h5><label>Skor:</label> <input type="number" id="edSkor" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatan" placeholder="Catatan..."><label>Link Materi:</label> <input type="text" id="edLink" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFile" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileUtama" style="font-size:12px; margin-bottom:10px;"></div></div><div class="rem-box"><h5><i class="fas fa-tools"></i> Remedial Tahap 1</h5><label>Skor Rem 1:</label> <input type="number" id="edRem1" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatanRem1" placeholder="Catatan perbaikan..."><label>Link Materi:</label> <input type="text" id="edLinkRem1" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFileRem1" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileRem1" style="font-size:12px; margin-bottom:10px;"></div></div><div class="rem-box"><h5><i class="fas fa-tools"></i> Remedial Tahap 2</h5><label>Skor Rem 2:</label> <input type="number" id="edRem2" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatanRem2" placeholder="Catatan perbaikan..."><label>Link Materi:</label> <input type="text" id="edLinkRem2" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFileRem2" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileRem2" style="font-size:12px; margin-bottom:10px;"></div></div><div class="rem-box"><h5><i class="fas fa-tools"></i> Remedial Tahap 3</h5><label>Skor Rem 3:</label> <input type="number" id="edRem3" min="0" max="100"><label>Catatan Guru:</label> <input type="text" id="edCatatanRem3" placeholder="Catatan perbaikan..."><label>Link Materi:</label> <input type="text" id="edLinkRem3" placeholder="URL Tautan..."><label>Ganti/Tambah File:</label> <input type="file" id="edFileRem3" accept=".pdf,.doc,.docx,.jpg,.png"><div id="infoFileRem3" style="font-size:12px; margin-bottom:10px;"></div></div></div></div><div class="modal-footer" style="justify-content: space-between; flex-wrap:wrap; gap:10px;"><button onclick="hapusNilaiGuru(document.getElementById('edId').value)" class="btn-hapus" style="padding:10px 20px;"><i class="fas fa-trash"></i> Hapus Riwayat Nilai Ini</button><div style="display:flex; gap:10px;"><button onclick="batalEditNilaiGuru()" style="background:#64748b; padding:10px 20px;">Batal</button><button id="btnSimpanEditGuru" onclick="simpanEditNilaiGuruLengkap()" class="btn-success" style="padding:10px 20px;"><i class="fas fa-check"></i> Simpan Perubahan</button></div></div></div></div>
+    
     <div id="modalEditKolom" class="modal-overlay hidden"><div class="modal-container" style="max-width: 500px;"><div class="modal-header"><h3 style="margin:0; color:var(--text-dark); font-size:18px;"><i class="fas fa-cog" style="color:var(--accent); margin-right:8px;"></i> Edit Informasi Penilaian</h3><button class="btn-close" onclick="tutupModalEditKolom()"><i class="fas fa-times"></i></button></div><div class="modal-body" style="background: #f8fafc;"><div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 13px; color: #1e3a8a; border: 1px solid rgba(59, 130, 246, 0.2);"><i class="fas fa-info-circle"></i> Perubahan di sini akan diterapkan secara massal pada <b>semua nilai murid</b> di kolom <b id="lblKolomEditName"></b>.</div><input type="hidden" id="edKolomJenis"><input type="hidden" id="edKolomUrutan"><label><b>Sub Topik / Materi Pembelajaran:</b></label><input type="text" id="edKolomTopik" placeholder="Cth: Teks Observasi"><label><b>Batas KKTP Baru:</b></label><input type="number" id="edKolomKktp" min="0" max="100" placeholder="Cth: 75"><label><b>Tanggal Pelaksanaan (Opsional):</b></label><input type="date" id="edKolomWaktu"></div><div class="modal-footer" style="justify-content: space-between; flex-wrap:wrap; gap:10px;"><button onclick="hapusKolomPenilaian()" class="btn-hapus" style="padding:10px 20px;"><i class="fas fa-trash"></i> Hapus Kolom Ini</button><div style="display:flex; gap:10px;"><button onclick="tutupModalEditKolom()" style="background:#64748b; padding:10px 20px;">Batal</button><button id="btnSimpanKolom" onclick="simpanEditKolomLengkap()" class="btn-success" style="padding:10px 20px;"><i class="fas fa-check"></i> Simpan Perubahan</button></div></div></div></div>
+    
     <div id="modalResponOrtu" class="modal-overlay hidden"><div class="modal-container" style="max-width: 600px;"><div class="modal-header"><h3 style="margin:0; color:var(--text-dark); font-size:18px;"><i class="fas fa-comments" style="color:#10b981; margin-right:8px;"></i> Riwayat Respon Orang Tua</h3><button class="btn-close" onclick="tutupModalResponOrtu()"><i class="fas fa-times"></i></button></div><div class="modal-body" style="background: #f8fafc;" id="kontenResponOrtu"></div><div class="modal-footer"><button onclick="tutupModalResponOrtu()" style="background:#64748b; padding:10px 20px;">Tutup</button></div></div></div>
 
-    <!-- LOGIKA JAVASCRIPT -->
+    <!-- LOGIKA JAVASCRIPT LENGKAP -->
     <script>
         const masterDataMapel = ["Akidah Akhlak", "Alquran Hadis", "Bahasa Arab", "Bahasa Indonesia", "Bahasa Inggris", "Fikih", "Informatika", "IPA", "IPS", "Matematika", "Mulok", "Pendidikan Pancasila", "PJOK", "Prakarya", "Seni", "SKI"];
         let sysData = {}; let userAktif = null; let modeEditSiswa = false; let modeEditGuru = false; 
@@ -723,15 +690,12 @@
             if(userAktif) populateFiltersLaporanDanKelola();
         }
 
-        // FITUR BARU: MENGISI DROPDOWN KELAS UNTUK PENGUMUMAN
         function populatePengumumanDropdown() {
             if(userAktif && userAktif.role === 'guru') {
                 const sel = document.getElementById('pilihanKelasMapelPengumuman');
                 if(sel) {
                     let opt = '<option value="">-- Pilih Tujuan Kelas & Mapel --</option>';
-                    userAktif.mengajar.forEach(m => {
-                        opt += `<option value="${m.kelas}|${m.mapel}">${m.kelas} - ${m.mapel}</option>`;
-                    });
+                    userAktif.mengajar.forEach(m => { opt += `<option value="${m.kelas}|${m.mapel}">${m.kelas} - ${m.mapel}</option>`; });
                     sel.innerHTML = opt;
                 }
             }
@@ -743,9 +707,7 @@
             const elgMapel = document.getElementById('gMapel'); if(elgMapel) elgMapel.innerHTML = '<option value="">-- Mata Pelajaran --</option>' + sysMpl.map(m=>`<option value="${m}">${m}</option>`).join('');
             
             const elFilterGuruAdmin = document.getElementById('filterKelasGuruAdmin');
-            if(elFilterGuruAdmin) {
-                elFilterGuruAdmin.innerHTML = '<option value="SEMUA">-- Semua Kelas --</option>' + sysKls.map(k=>`<option value="${k}">${k}</option>`).join('');
-            }
+            if(elFilterGuruAdmin) elFilterGuruAdmin.innerHTML = '<option value="SEMUA">-- Semua Kelas --</option>' + sysKls.map(k=>`<option value="${k}">${k}</option>`).join('');
 
             const elFilterSiswa = document.getElementById('filterKelasSiswa');
             if(elFilterSiswa) {
@@ -754,9 +716,7 @@
                     optSiswa = '<option value="SEMUA">-- Semua Kelas Saya --</option>';
                     const guruKls = [...new Set(userAktif.mengajar.map(m => m.kelas))].sort(); 
                     guruKls.forEach(k => optSiswa += `<option value="${k}">${k}</option>`);
-                } else { 
-                    sysKls.forEach(k => optSiswa += `<option value="${k}">${k}</option>`); 
-                }
+                } else { sysKls.forEach(k => optSiswa += `<option value="${k}">${k}</option>`); }
                 elFilterSiswa.innerHTML = optSiswa;
             }
 
@@ -933,7 +893,7 @@
                 const hasilN = await resN.json();
                 let semuaNilaiAktif = hasilN.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester);
                 let unreadCountNilai = 0;
-                semuaiNilaiAktif.forEach(n => {
+                semuaNilaiAktif.forEach(n => {
                     if (!n.dilihat_ortu) unreadCountNilai++;
                     else if (n.remedial_1 !== null && n.remedial_1 !== undefined && !n.dilihat_ortu_rem1) unreadCountNilai++;
                     else if (n.remedial_2 !== null && n.remedial_2 !== undefined && !n.dilihat_ortu_rem2) unreadCountNilai++;
@@ -1041,7 +1001,7 @@
         }
 
         // ============================
-        // FITUR BARU: PENGUMUMAN GURU
+        // PENGUMUMAN GURU
         // ============================
         async function kirimPengumumanGuru() {
             const val = document.getElementById('pilihanKelasMapelPengumuman').value;
@@ -1123,7 +1083,7 @@
         }
 
         // ============================
-        // FITUR BARU: PENGUMUMAN ORTU
+        // PENGUMUMAN ORTU
         // ============================
         async function muatPengumumanOrtu() {
             document.getElementById('lblKelasOrtuPengumuman').innerText = userAktif.kelas;
@@ -1164,7 +1124,6 @@
             }
             document.getElementById('wadahListPengumumanOrtu').innerHTML = html;
             
-            // Tandai sudah dibaca di database
             if(unreadIds.length > 0) {
                 await fetch('/api/pengumuman/baca', { 
                     method: 'PUT', 
@@ -1176,7 +1135,7 @@
         }
 
         // ============================
-        // MODAL GURU LOGIC (EXISTING)
+        // MODAL GURU LOGIC
         // ============================
         function bukaModalGuru() { 
             document.getElementById('modalGuru').classList.remove('hidden');
@@ -1478,23 +1437,302 @@
             } catch(e) { alert("Gagal koneksi ke server."); }
         }
 
-        // ==========================================
-        // FUNGSI-FUNGSI YANG TERPOTONG (PLACEHOLDER AMAN)
-        // ==========================================
-        function editNilaiGuru(id) { alert('Fungsi Edit Nilai Lengkap dan Remedial perlu ditambahkan dari kode versi sebelumnya.'); }
-        function lihatResponOrtu(id) { alert('Fungsi Lihat Respon Ortu perlu ditambahkan dari kode versi sebelumnya.'); }
+        function lihatResponOrtu(id) {
+            const n = window.dataKelolaNilaiCache.find(x => x.id === id); if(!n) return;
+            let html = '';
+            const buatCardRespon = (tahap, waktu, respon) => {
+                if(!waktu) return '';
+                return `<div style="background:white; padding:15px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                            <h5 style="margin:0 0 10px; color:var(--accent); font-size:13px; text-transform:uppercase;">${tahap}</h5>
+                            <div style="font-size:12px; color:#64748b; margin-bottom:5px;"><i class="far fa-clock"></i> Dilihat/Merespon pada: <b>${waktu}</b></div>
+                            <div style="font-size:13px; color:var(--text-dark); background:#f4f7fe; padding:10px; border-radius:8px; font-style:italic;">"${respon || 'Hanya dibaca, tidak ada balasan'}"</div>
+                        </div>`;
+            };
+            html += buatCardRespon('Nilai Utama (Awal)', n.waktu_dilihat, n.feedback_ortu);
+            html += buatCardRespon('Remedial Tahap 1', n.waktu_dilihat_rem1, n.feedback_rem1);
+            html += buatCardRespon('Remedial Tahap 2', n.waktu_dilihat_rem2, n.feedback_rem2);
+            html += buatCardRespon('Remedial Tahap 3', n.waktu_dilihat_rem3, n.feedback_rem3);
+
+            if(html === '') html = '<div style="text-align:center; padding:20px; color:#94a3b8; font-style:italic;">Orang tua belum memberikan respon.</div>';
+            document.getElementById('kontenResponOrtu').innerHTML = html;
+            document.getElementById('modalResponOrtu').classList.remove('hidden');
+
+            if(!n.guru_sudah_baca) {
+                fetch('/api/guru/baca-notif', { method: 'PUT' }).then(() => { n.guru_sudah_baca = true; muatKelolaNilai(); });
+            }
+        }
         function tutupModalResponOrtu() { document.getElementById('modalResponOrtu').classList.add('hidden'); }
+
+        function editNilaiGuru(id) {
+            const n = window.dataKelolaNilaiCache.find(x => x.id === id); if(!n) return;
+            hapusFileUtama = false; hapusFileRem1 = false; hapusFileRem2 = false; hapusFileRem3 = false;
+            
+            document.getElementById('modalEditNilai').classList.remove('hidden'); 
+            
+            document.getElementById('edId').value = n.id; document.getElementById('edNama').value = n.nama_siswa;
+            if(n.kktp) { document.getElementById('edKktp').value = n.kktp; document.getElementById('edKktp').disabled = false; } else { document.getElementById('edKktp').value = ''; document.getElementById('edKktp').disabled = true; }
+
+            document.getElementById('edSkor').value = n.skor; document.getElementById('edCatatan').value = n.catatan || ''; document.getElementById('edLink').value = n.lampiran_link || ''; document.getElementById('edFile').value = '';
+            document.getElementById('infoFileUtama').innerHTML = n.lampiran_file ? `<span style="color:#10b981; font-weight:600;"><i class="fas fa-check-circle"></i> File Terlampir</span> &nbsp;|&nbsp; <a href="#" onclick="setHapusFile('utama'); return false;" style="color:#ef4444; text-decoration:none;"><i class="fas fa-trash"></i> Hapus File</a>` : `<span style="color:#94a3b8; font-style:italic;">Belum ada lampiran file</span>`;
+
+            document.getElementById('edRem1').value = n.remedial_1 !== null && n.remedial_1 !== undefined ? n.remedial_1 : ''; document.getElementById('edCatatanRem1').value = n.catatan_rem1 || ''; document.getElementById('edLinkRem1').value = n.lampiran_link_rem1 || ''; document.getElementById('edFileRem1').value = '';
+            document.getElementById('infoFileRem1').innerHTML = n.lampiran_file_rem1 ? `<span style="color:#10b981; font-weight:600;"><i class="fas fa-check-circle"></i> File Terlampir</span> &nbsp;|&nbsp; <a href="#" onclick="setHapusFile('rem1'); return false;" style="color:#ef4444; text-decoration:none;"><i class="fas fa-trash"></i> Hapus File</a>` : `<span style="color:#94a3b8; font-style:italic;">Belum ada lampiran file</span>`;
+
+            document.getElementById('edRem2').value = n.remedial_2 !== null && n.remedial_2 !== undefined ? n.remedial_2 : ''; document.getElementById('edCatatanRem2').value = n.catatan_rem2 || ''; document.getElementById('edLinkRem2').value = n.lampiran_link_rem2 || ''; document.getElementById('edFileRem2').value = '';
+            document.getElementById('infoFileRem2').innerHTML = n.lampiran_file_rem2 ? `<span style="color:#10b981; font-weight:600;"><i class="fas fa-check-circle"></i> File Terlampir</span> &nbsp;|&nbsp; <a href="#" onclick="setHapusFile('rem2'); return false;" style="color:#ef4444; text-decoration:none;"><i class="fas fa-trash"></i> Hapus File</a>` : `<span style="color:#94a3b8; font-style:italic;">Belum ada lampiran file</span>`;
+
+            document.getElementById('edRem3').value = n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : ''; document.getElementById('edCatatanRem3').value = n.catatan_rem3 || ''; document.getElementById('edLinkRem3').value = n.lampiran_link_rem3 || ''; document.getElementById('edFileRem3').value = '';
+            document.getElementById('infoFileRem3').innerHTML = n.lampiran_file_rem3 ? `<span style="color:#10b981; font-weight:600;"><i class="fas fa-check-circle"></i> File Terlampir</span> &nbsp;|&nbsp; <a href="#" onclick="setHapusFile('rem3'); return false;" style="color:#ef4444; text-decoration:none;"><i class="fas fa-trash"></i> Hapus File</a>` : `<span style="color:#94a3b8; font-style:italic;">Belum ada lampiran file</span>`;
+        }
+
         function batalEditNilaiGuru() { document.getElementById('modalEditNilai').classList.add('hidden'); }
-        function simpanEditNilaiGuruLengkap() { alert('Fungsi Simpan Perubahan perlu ditambahkan.'); }
-        function hapusNilaiGuru(id) { alert('Fungsi Hapus Nilai Spesifik perlu ditambahkan.'); }
-        function gantiTabLaporan(tab) { console.log('Ganti Tab:', tab); }
-        function muatLaporanGlobal() { console.log('Tarik data laporan...'); }
-        function eksporExcel() { alert('Fungsi ekspor ke Excel membutuhkan kode versi sebelumnya.'); }
-        function eksporPDF() { alert('Fungsi cetak ke PDF membutuhkan kode versi sebelumnya.'); }
-        function buildDropdownMapelOrtu() { console.log('Siapkan filter mapel...'); }
-        function gantiTabOrtu(tab) { console.log('Tab ortu diklik:', tab); }
-        function renderTabelMapelOrtu(tab) { console.log('Render tabel mapel...'); }
-        function muatRaporAnakFeed() { console.log('Memuat Feed Nilai Anak...'); }
+
+        async function getBase64Helper(fileInput) {
+            if(fileInput.files.length > 0) { const f = fileInput.files[0]; if(f.size > 2 * 1024 * 1024) throw new Error("Ukuran file baru maksimal 2MB!"); return await new Promise(res => { const r = new FileReader(); r.onload = e => res(e.target.result); r.readAsDataURL(f); }); }
+            return undefined;
+        }
+
+        async function simpanEditNilaiGuruLengkap() {
+            const id = document.getElementById('edId').value; const skorBaru = document.getElementById('edSkor').value; if(!skorBaru) return alert("Skor Nilai Utama tidak boleh kosong!");
+            const payload = { 
+                skor: skorBaru, catatan: document.getElementById('edCatatan').value, lampiran_link: document.getElementById('edLink').value,
+                remedial_1: document.getElementById('edRem1').value, catatan_rem1: document.getElementById('edCatatanRem1').value, lampiran_link_rem1: document.getElementById('edLinkRem1').value,
+                remedial_2: document.getElementById('edRem2').value, catatan_rem2: document.getElementById('edCatatanRem2').value, lampiran_link_rem2: document.getElementById('edLinkRem2').value,
+                remedial_3: document.getElementById('edRem3').value, catatan_rem3: document.getElementById('edCatatanRem3').value, lampiran_link_rem3: document.getElementById('edLinkRem3').value
+            }; 
+            if(!document.getElementById('edKktp').disabled) payload.kktp = document.getElementById('edKktp').value;
+
+            const btnSimpan = document.getElementById('btnSimpanEditGuru'); const originalText = btnSimpan.innerHTML; btnSimpan.innerHTML = '<i class="fas fa-spinner fa-spin"></i> MENYIMPAN...'; btnSimpan.disabled = true;
+
+            try {
+                const fUtama = await getBase64Helper(document.getElementById('edFile')); if(fUtama !== undefined) payload.lampiran_file = fUtama; else if(hapusFileUtama) payload.lampiran_file = "";
+                const fRem1 = await getBase64Helper(document.getElementById('edFileRem1')); if(fRem1 !== undefined) payload.lampiran_file_rem1 = fRem1; else if(hapusFileRem1) payload.lampiran_file_rem1 = "";
+                const fRem2 = await getBase64Helper(document.getElementById('edFileRem2')); if(fRem2 !== undefined) payload.lampiran_file_rem2 = fRem2; else if(hapusFileRem2) payload.lampiran_file_rem2 = "";
+                const fRem3 = await getBase64Helper(document.getElementById('edFileRem3')); if(fRem3 !== undefined) payload.lampiran_file_rem3 = fRem3; else if(hapusFileRem3) payload.lampiran_file_rem3 = "";
+
+                await fetch(`/api/nilai/${id}/edit`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+                alert("Data diperbarui!"); batalEditNilaiGuru(); muatKelolaNilai(); updateWidgets(userAktif);
+            } catch(e) { alert(e.message); } finally { btnSimpan.innerHTML = originalText; btnSimpan.disabled = false; }
+        }
+
+        async function hapusNilaiGuru(id) { if(confirm("PERHATIAN!\nAnda yakin ingin menghapus seluruh data nilai beserta riwayat ini?")) { await fetch(`/api/nilai/${id}`, { method: 'DELETE' }); batalEditNilaiGuru(); muatKelolaNilai(); updateWidgets(userAktif); } }
+
+        function gantiTabLaporan(tipe) {
+            tipeLaporanAktif = tipe; document.querySelectorAll('#laporanRekap .tab-btn-lap').forEach(btn => { btn.style.background = '#f1f5f9'; btn.style.color = '#64748b'; });
+            const activeBtn = document.getElementById('tabLap' + tipe.replace(/\s/g, '')); if(activeBtn) { activeBtn.style.background = 'var(--accent)'; activeBtn.style.color = 'white'; }
+            document.getElementById('judulJenisLaporan').innerText = tipe === 'Keseluruhan' ? 'KESELURUHAN' : tipe.toUpperCase(); muatLaporanGlobal();
+        }
+
+        function eksporExcel() { 
+            const wb = XLSX.utils.book_new(); 
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(window.laporanDataExport), "Laporan Nilai"); 
+            XLSX.writeFile(wb, `Laporan_SIPENA_${tipeLaporanAktif}.xlsx`); 
+        }
+
+        function eksporPDF() { 
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses PDF...';
+            btn.disabled = true;
+
+            const element = document.getElementById('areaCetakPDF');
+            const tabelContainer = document.getElementById('wadahTabelLaporan');
+            
+            const oriOverflow = element.style.overflowX;
+            const oriWidth = element.style.width;
+            const oriMaxW = element.style.maxWidth;
+            const containerOriOverflow = tabelContainer.style.overflowX;
+            
+            element.style.overflowX = 'visible';
+            element.style.width = 'max-content';
+            element.style.maxWidth = 'none';
+            tabelContainer.style.overflowX = 'visible';
+            
+            setTimeout(() => {
+                const totalWidth = element.scrollWidth;
+                const isWide = totalWidth > 900; 
+                
+                const opt = {
+                    margin:       0.3,
+                    filename:     `Laporan_SIPENA_${tipeLaporanAktif}.pdf`,
+                    image:        { type: 'jpeg', quality: 1 },
+                    html2canvas:  { scale: 2, useCORS: true, width: totalWidth, windowWidth: totalWidth },
+                    jsPDF:        { unit: 'in', format: 'a4', orientation: isWide ? 'landscape' : 'portrait' }
+                };
+                
+                html2pdf().set(opt).from(element).save().then(() => {
+                    element.style.overflowX = oriOverflow;
+                    element.style.width = oriWidth;
+                    element.style.maxWidth = oriMaxW;
+                    tabelContainer.style.overflowX = containerOriOverflow;
+                    
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
+            }, 500);
+        }
+        
+        async function muatLaporanGlobal() {
+            const res = await fetch('/api/nilai?t=' + new Date().getTime()); const hasil = await res.json();
+            const filterTa = document.getElementById('filterTaLaporan').value; const filterSmt = document.getElementById('filterSmtLaporan').value; let kelasTerpilih = document.getElementById('filterLapKelas').value; let mapelTerpilih = document.getElementById('filterLapMapel').value;
+            
+            document.getElementById('lblTaCetak').innerText = filterTa; document.getElementById('lblSmtCetak').innerText = filterSmt;
+            let filterText = ""; if (kelasTerpilih !== "SEMUA") filterText += ` | Kelas ${kelasTerpilih}`; if (mapelTerpilih !== "SEMUA") filterText += ` | Mapel: ${mapelTerpilih}`; document.getElementById('lblFilterCetak').innerText = filterText;
+
+            let daftarNilai = hasil.data.filter(n => n.tahunAjaran === filterTa && n.semester === filterSmt);
+            if (kelasTerpilih !== "SEMUA") daftarNilai = daftarNilai.filter(n => n.kelas === kelasTerpilih); if (mapelTerpilih !== "SEMUA") daftarNilai = daftarNilai.filter(n => n.mapel === mapelTerpilih);
+            if(userAktif.role === 'guru') { daftarNilai = daftarNilai.filter(n => { return userAktif.mengajar.some(m => m.kelas === n.kelas && m.mapel === n.mapel); }); }
+            if(tipeLaporanAktif !== 'Keseluruhan') { if(tipeLaporanAktif === 'Akhir Semester') daftarNilai = daftarNilai.filter(n => n.jenis.includes('Akhir')); else daftarNilai = daftarNilai.filter(n => n.jenis === tipeLaporanAktif); }
+
+            let urutanKeys = [...new Set(daftarNilai.map(n => { return n.jenis.includes('Akhir') ? n.jenis : `${n.jenis} ${n.urutan}`; }))]; urutanKeys.sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}));
+
+            let groupedData = {};
+            daftarNilai.forEach(n => {
+                let key = `${n.nisn}_${n.kelas}_${n.mapel}`;
+                if (!groupedData[key]) { groupedData[key] = { nisn: n.nisn, nama_siswa: n.nama_siswa, kelas: n.kelas, mapel: n.mapel, scores: {}, total: 0, count: 0 }; }
+                let colKey = n.jenis.includes('Akhir') ? n.jenis : `${n.jenis} ${n.urutan}`;
+                let skorFinal = n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : (n.remedial_2 !== null && n.remedial_2 !== undefined ? n.remedial_2 : (n.remedial_1 !== null && n.remedial_1 !== undefined ? n.remedial_1 : n.skor));
+                groupedData[key].scores[colKey] = { skor: skorFinal, status: n.status_tuntas }; groupedData[key].total += Number(skorFinal); groupedData[key].count += 1;
+            });
+
+            let exportDataArray = [];
+            let excelHeader = ["NISN", "Nama Murid", "Kelas", "Mata Pelajaran"];
+            urutanKeys.forEach(col => excelHeader.push(col));
+            excelHeader.push("RATA-RATA");
+            exportDataArray.push(excelHeader);
+
+            let theadHtml = `<tr><th>NISN</th><th>Nama Murid</th><th>Kelas</th><th>Mata Pelajaran</th>`; urutanKeys.forEach(col => { theadHtml += `<th>${col}</th>`; }); theadHtml += `<th>RATA-RATA</th></tr>`;
+            
+            let tbodyHtml = ''; let objVals = Object.values(groupedData);
+            if(objVals.length === 0) { tbodyHtml = `<tr><td colspan="${4 + urutanKeys.length + 1}" style="text-align:center; padding:30px; color:#94a3b8;">Belum ada data nilai pada kategori ini</td></tr>`; } 
+            else {
+                objVals.sort((a,b) => { if(a.mapel !== b.mapel) return a.mapel.localeCompare(b.mapel); if(a.kelas !== b.kelas) return a.kelas.localeCompare(b.kelas); return a.nama_siswa.localeCompare(b.nama_siswa); });
+                objVals.forEach(row => {
+                    let excelRowData = [row.nisn, row.nama_siswa, row.kelas, row.mapel];
+
+                    tbodyHtml += `<tr><td><small style="color:#94a3b8;">${row.nisn}</small></td><td style="white-space:nowrap;"><b style="color:var(--text-dark);">${row.nama_siswa}</b></td><td><b>${row.kelas}</b></td><td><span style="background:var(--bg-main); color:var(--accent); padding:6px 12px; border-radius:8px; font-size:11px; font-weight:600; border:1px solid #e2e8f0;">${row.mapel}</span></td>`;
+                    urutanKeys.forEach(col => {
+                        let cell = row.scores[col];
+                        if (cell) { 
+                            excelRowData.push(cell.skor); 
+                            let color = cell.status && cell.status.includes('TUNTAS') && !cell.status.includes('TIDAK') ? '#10b981' : '#ef4444'; 
+                            tbodyHtml += `<td><b style="font-size:16px;">${cell.skor}</b><br class="excel-remove"><span class="excel-remove" style="font-size:9px; color:${color}; font-weight:bold;">${cell.status||'-'}</span></td>`; 
+                        } 
+                        else { 
+                            excelRowData.push("-");
+                            tbodyHtml += `<td><span style="color:#cbd5e1; font-weight:bold;">-</span></td>`; 
+                        }
+                    });
+                    let avg = Math.round(row.total / row.count); 
+                    excelRowData.push(avg); 
+                    exportDataArray.push(excelRowData); 
+
+                    let avgColor = avg >= 70 ? '#10b981' : '#ef4444'; 
+                    tbodyHtml += `<td><b style="font-size:16px; color:${avgColor};">${avg}</b></td></tr>`;
+                });
+            }
+            window.laporanDataExport = exportDataArray; 
+            document.querySelector('#tabelLaporan thead').innerHTML = theadHtml; document.querySelector('#tabelLaporan tbody').innerHTML = tbodyHtml;
+
+            // GRAFIK ADMIN/GURU
+            let chartLabels = []; let chartData = []; let pointColors = []; let chartLabelText = '';
+            if (mapelTerpilih === "SEMUA" && kelasTerpilih === "SEMUA") {
+                const mapelUnik = [...new Set(daftarNilai.map(n => n.mapel))].sort(); chartLabels = mapelUnik; chartLabelText = 'Rata-rata Skor per Mata Pelajaran (Semua Kelas)';
+                mapelUnik.forEach(mapel => { const nilaiMapel = daftarNilai.filter(n => n.mapel === mapel); const avgSkor = nilaiMapel.reduce((tot, n) => tot + Number(n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : (n.remedial_2 !== null && n.remedial_2 !== undefined ? n.remedial_2 : (n.remedial_1 !== null && n.remedial_1 !== undefined ? n.remedial_1 : n.skor))), 0) / (nilaiMapel.length || 1); const avgKktp = nilaiMapel.reduce((tot, n) => tot + (n.kktp || 70), 0) / (nilaiMapel.length || 1); chartData.push(avgSkor); pointColors.push(avgSkor >= avgKktp ? '#10b981' : '#ef4444'); });
+            } else if (mapelTerpilih !== "SEMUA" && kelasTerpilih === "SEMUA") {
+                const klsUnik = [...new Set(daftarNilai.map(n => n.kelas))].sort(); chartLabels = klsUnik; chartLabelText = `Rata-rata Skor ${mapelTerpilih} per Kelas`;
+                klsUnik.forEach(kls => { const nilaiKls = daftarNilai.filter(n => n.kelas === kls); const avgSkor = nilaiKls.reduce((tot, n) => tot + Number(n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : (n.remedial_2 !== null && n.remedial_2 !== undefined ? n.remedial_2 : (n.remedial_1 !== null && n.remedial_1 !== undefined ? n.remedial_1 : n.skor))), 0) / (nilaiKls.length || 1); const avgKktp = nilaiKls.reduce((tot, n) => tot + (n.kktp || 70), 0) / (nilaiKls.length || 1); chartData.push(avgSkor); pointColors.push(avgSkor >= avgKktp ? '#10b981' : '#ef4444'); });
+            } else {
+                chartLabels = urutanKeys; chartLabelText = `Perkembangan Skor: ${mapelTerpilih !== 'SEMUA' ? mapelTerpilih : 'Semua Mapel'} (Kelas ${kelasTerpilih !== 'SEMUA' ? kelasTerpilih : 'Semua'})`;
+                urutanKeys.forEach(jns => { const nilaiJns = daftarNilai.filter(n => (`${n.jenis} ${n.urutan!=='-'?n.urutan:''}`).trim() === jns.replace('Ke-','').trim()); if(nilaiJns.length > 0) { const avgSkor = nilaiJns.reduce((tot, n) => tot + Number(n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : (n.remedial_2 !== null && n.remedial_2 !== undefined ? n.remedial_2 : (n.remedial_1 !== null && n.remedial_1 !== undefined ? n.remedial_1 : n.skor))), 0) / nilaiJns.length; const avgKktp = nilaiJns.reduce((tot, n) => tot + (n.kktp || 70), 0) / nilaiJns.length; chartData.push(avgSkor); pointColors.push(avgSkor >= avgKktp ? '#10b981' : '#ef4444'); } else { chartData.push(0); pointColors.push('#cbd5e1'); } });
+            }
+
+            const ctx = document.getElementById('grafikLaporan').getContext('2d'); if(window.grafikAdmin) window.grafikAdmin.destroy();
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400); gradient.addColorStop(0, 'rgba(67, 24, 255, 0.6)'); gradient.addColorStop(1, 'rgba(67, 24, 255, 0.05)');
+            window.grafikAdmin = new Chart(ctx, { type: 'line', data: { labels: chartLabels.length > 0 ? chartLabels : ['Belum Ada Data'], datasets: [{ label: chartLabelText, data: chartData.map(num => Math.round(num * 10) / 10), borderColor: '#4318ff', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4, pointBackgroundColor: pointColors, pointBorderColor: '#ffffff', pointBorderWidth: 2, pointRadius: 6, pointHoverRadius: 8 }] }, options: { responsive: true, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: true, position: 'top' } } } });
+        }
+
+        function gantiTabOrtu(tipe) {
+            tipeLaporanOrtuAktif = tipe; document.querySelectorAll('#ortuRekapTotal .tab-btn-lap').forEach(btn => { btn.style.background = '#f1f5f9'; btn.style.color = '#64748b'; });
+            const activeBtn = document.getElementById('tabOrtu' + tipe.replace(/\s/g, '')); if(activeBtn) { activeBtn.style.background = 'var(--accent)'; activeBtn.style.color = 'white'; }
+            if(ortuMapelAktif) { renderTabelMapelOrtu(ortuMapelAktif, tipe); }
+        }
+
+        async function buildDropdownMapelOrtu() {
+            document.getElementById('wadahRekapAnakListMapel').innerHTML = ''; const resG = await fetch('/api/guru'); const dataGuru = await resG.json();
+            let mapelKelasIni = new Set(); dataGuru.data.forEach(guru => { if(guru.mengajar) { guru.mengajar.forEach(m => { if(m.kelas === userAktif.kelas) { mapelKelasIni.add(m.mapel); } }); } });
+            let sortedMapel = Array.from(mapelKelasIni).sort(); const sel = document.getElementById('ortuPilihMapel');
+
+            if(sortedMapel.length === 0) {
+                sel.innerHTML = '<option value="">Belum ada mapel didaftarkan</option>'; document.getElementById('wadahTombolTabOrtu').style.display = 'none';
+                document.getElementById('wadahRekapAnakListMapel').innerHTML = `<div style="text-align:center; padding:50px 20px; background:white; border-radius:24px; border:1px dashed #cbd5e1;"><i class="fas fa-book" style="font-size:40px; color:#e2e8f0; margin-bottom:15px;"></i><h3 style="color:#64748b; margin:0;">Belum Ada Mata Pelajaran</h3><p style="color:#94a3b8; font-size:13px; margin-top:5px;">Admin belum mendaftarkan guru untuk kelas ini.</p></div>`;
+                if(window.grafikOrtu) window.grafikOrtu.destroy(); updateWidgetsOrtuKosong(); return;
+            }
+            document.getElementById('wadahTombolTabOrtu').style.display = 'flex'; let opts = ''; sortedMapel.forEach(m => { opts += `<option value="${m}">${m}</option>`; }); sel.innerHTML = opts;
+            ortuMapelAktif = sel.value; gantiTabOrtu('Tugas Harian'); 
+        }
+
+        async function renderTabelMapelOrtu(namaMapel, tipe) {
+            updateWidgetOrtuByMapel(namaMapel);
+            const res = await fetch(`/api/nilai/${userAktif.nisn}?t=` + new Date().getTime()); const hasil = await res.json();
+            let nilaiAktif = hasil.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester && n.mapel === namaMapel && n.dilihat_ortu === true);
+            
+            if(tipe !== 'Keseluruhan') { if(tipe === 'Akhir Semester') nilaiAktif = nilaiAktif.filter(n => n.jenis.includes('Akhir')); else nilaiAktif = nilaiAktif.filter(n => n.jenis === tipe); }
+            nilaiAktif.sort((a,b) => a.id - b.id); let wadahTabel = document.getElementById('wadahRekapAnakListMapel');
+            
+            if(nilaiAktif.length === 0) { wadahTabel.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8; font-size:13px; font-style:italic; background:white; border-radius:24px; border:1px solid #e2e8f0;">Belum ada data nilai yang dipublish untuk mapel dan kategori ini.</div>`; if(window.grafikOrtu) window.grafikOrtu.destroy(); return; }
+
+            let htmlTabel = `<div style="overflow-x:auto; background:transparent;"><table style="font-size: 13px; margin:0;"><thead><tr><th>Tanggal Input</th><th>Penilaian</th><th>Topik</th><th>Skor Akhir</th><th>KKTP</th><th>Status</th></tr></thead><tbody>`;
+            nilaiAktif.forEach(n => {
+                let skorFinal = n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : (n.remedial_2 !== null && n.remedial_2 !== undefined ? n.remedial_2 : (n.remedial_1 !== null && n.remedial_1 !== undefined ? n.remedial_1 : n.skor));
+                let colorStatus = n.status_tuntas && n.status_tuntas.includes('TUNTAS') && !n.status_tuntas.includes('TIDAK') ? '#10b981' : '#ef4444';
+                htmlTabel += `<tr><td>${n.tanggal_input || '-'}</td><td><span style="background:var(--bg-main); padding:6px 12px; border-radius:8px; font-size:11px; font-weight:600;">${n.jenis} ${n.urutan!=='-'?'Ke-'+n.urutan:''}</span></td><td>${n.topik || '-'}</td><td><b style="font-size:15px;">${skorFinal}</b></td><td>${n.kktp || '-'}</td><td style="color:${colorStatus}; font-weight:bold;">${n.status_tuntas || '-'}</td></tr>`;
+            }); htmlTabel += `</tbody></table></div>`; wadahTabel.innerHTML = htmlTabel;
+
+            const ctx = document.getElementById('grafikAnak').getContext('2d'); if(window.grafikOrtu) window.grafikOrtu.destroy();
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400); gradient.addColorStop(0, 'rgba(16, 185, 129, 0.5)'); gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+            const skorData = nilaiAktif.map(n => Number(n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : (n.remedial_2 !== null && n.remedial_2 !== undefined ? n.remedial_2 : (n.remedial_1 !== null && n.remedial_1 !== undefined ? n.remedial_1 : n.skor))));
+            const kktpData = nilaiAktif.map(n => n.kktp || 70); const ptColors = skorData.map((skor, i) => skor >= kktpData[i] ? '#10b981' : '#ef4444'); 
+
+            window.grafikOrtu = new Chart(ctx, { type: 'line', data: { labels: nilaiAktif.map(n => `${n.jenis} ${n.urutan!=='-'?'Ke-'+n.urutan:''}`), datasets: [{ label: `Skor Akhir: ${namaMapel}`, data: skorData, borderColor: '#10b981', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4, pointBackgroundColor: ptColors, pointBorderColor: '#ffffff', pointBorderWidth: 2, pointRadius: 6, pointHoverRadius: 8 }] }, options: { responsive: true, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } } });
+        }
+
+        async function muatRaporAnakFeed() {
+            const res = await fetch(`/api/nilai/${userAktif.nisn}?t=` + new Date().getTime()); const hasil = await res.json();
+            let semuaNilaiAktif = hasil.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester);
+            semuaNilaiAktif.sort((a,b) => b.id.localeCompare(a.id)); 
+
+            let htmlFeed = ''; let stopRender = false;
+            for (let i = 0; i < semuaNilaiAktif.length; i++) {
+                if(stopRender) break; const n = semuaNilaiAktif[i]; let tglLaksana = n.waktu_pelaksanaan ? ` | Pelaksanaan: ${n.waktu_pelaksanaan}` : '';
+                let cardBase = `<div style="background: white; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border-radius: 24px; border: 1px solid #f1f5f9; position:relative; overflow:hidden;"><div style="position:absolute; left:0; top:0; bottom:0; width:8px; background:var(--accent);"></div><div style="float: right; text-align:right;"><span style="font-size: 11px; color: #94a3b8;"><i class="fas fa-calendar-alt"></i> Diinput: ${n.tanggal_input || '-'}</span></div><h4 style="margin:0 0 8px; color: var(--accent); font-size:16px;">${n.mapel} - ${n.jenis} ${n.urutan!=='-' ? 'Ke-'+n.urutan : ''}</h4><p style="margin:0 0 15px; font-size:13px; color:#475569;"><i class="fas fa-bookmark" style="color:#cbd5e1; margin-right:5px;"></i> Topik: <b>${n.topik || '-'}</b> ${n.kktp ? ` &nbsp;|&nbsp; <i class="fas fa-bullseye" style="color:#cbd5e1; margin-right:5px;"></i> KKTP: <b>${n.kktp}</b>` : ''} ${tglLaksana}</p><hr style="border:none; border-top:1px dashed #e2e8f0; margin: 15px 0;"><h5 style="margin:0 0 15px; color:#64748b; font-size:12px; text-transform:uppercase;">Riwayat Penilaian & Remedial:</h5><div style="display:flex; flex-direction:column; gap:15px;">`;
+
+                const generateRow = (label, skor, kktp, isSeen, feedback, waktu, formId, tahap, catGuru, linkGuru, fileGuru) => {
+                    let stat = kktp ? (skor >= kktp ? 'TUNTAS' : 'TIDAK TUNTAS') : '-'; let col = stat === 'TUNTAS' ? '#10b981' : (stat === 'TIDAK TUNTAS' ? '#ef4444' : '#64748b');
+                    let lampiranHtml = '';
+                    if(linkGuru || fileGuru) {
+                        lampiranHtml += `<div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">`;
+                        if(linkGuru) { let properLink = linkGuru.startsWith('http') ? linkGuru : 'https://' + linkGuru; lampiranHtml += `<a href="${properLink}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding:8px 14px; border-radius:10px; text-decoration:none; font-size:11px; font-weight:600;"><i class="fas fa-link"></i> Tautan Referensi</a>`; }
+                        if(fileGuru) { lampiranHtml += `<a href="${fileGuru}" download="Lampiran_SIPENA_${tahap}" target="_blank" style="background:#dcfce7; color:#16a34a; padding:8px 14px; border-radius:10px; text-decoration:none; font-size:11px; font-weight:600;"><i class="fas fa-download"></i> Lihat/Unduh File</a>`; }
+                        lampiranHtml += `</div>`;
+                    }
+                    let rowHtml = `<div style="background:#f4f7fe; border:none; border-radius:16px; padding:20px; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px;"><div style="flex:1; min-width:200px;"><div style="font-size:12px; color:#64748b; font-weight:600; margin-bottom:6px;">${label}</div><div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;"><span style="font-size:32px; font-weight:bold; color:var(--text-dark); line-height:1;">${skor}</span><span style="font-size:11px; font-weight:700; color:${col}; background:${col}15; padding:6px 12px; border-radius:8px;">${stat}</span></div>${catGuru ? `<div style="padding:10px; background:white; border-left:4px solid #cbd5e1; font-style:italic; font-size:12px; color:#475569; border-radius:8px;">Catatan Guru: "${catGuru}"</div>` : ''}${lampiranHtml}</div><div style="flex:1; min-width:200px; text-align:right;">`;
+                    if(!isSeen) { rowHtml += `<div style="display:flex; flex-direction:column; gap:8px;"><div style="font-size:11px; color:#b91c1c; font-weight:600;"><i class="fas fa-exclamation-circle"></i> Berikan respon untuk membuka nilai selanjutnya</div><div style="display:flex; gap:5px;"><input type="text" id="${formId}" placeholder="Tulis tanggapan / terima kasih..." style="margin:0; padding:12px; font-size:12px; flex:1; box-sizing:border-box;"><button onclick="kirimFeedback('${n.id}', '${tahap}')" style="padding:12px 18px; font-size:12px;"><i class="fas fa-paper-plane"></i></button></div></div>`; } 
+                    else { rowHtml += `<div style="font-size:12px; color:#10b981; font-weight:600; margin-bottom:6px;"><i class="fas fa-check-circle"></i> Selesai Dilihat & Direspon</div><div style="font-size:12px; color:#64748b; font-style:italic;">"${feedback}"</div><div style="font-size:10px; color:#94a3b8; margin-top:6px;">${waktu}</div>`; }
+                    rowHtml += `</div></div>`; return rowHtml;
+                };
+
+                cardBase += generateRow('NILAI UTAMA (AWAL)', n.skor, n.kktp, n.dilihat_ortu, n.feedback_ortu, n.waktu_dilihat, `feed_${n.id}_utama`, 'utama', n.catatan, n.lampiran_link, n.lampiran_file);
+                if(!n.dilihat_ortu) { htmlFeed += cardBase + `</div></div>`; stopRender = true; continue; }
+
+                if(n.remedial_1 !== null && n.remedial_1 !== undefined) { cardBase += generateRow('REMEDIAL TAHAP 1', n.remedial_1, n.kktp, n.dilihat_ortu_rem1, n.feedback_rem1, n.waktu_dilihat_rem1, `feed_${n.id}_rem1`, 'rem1', n.catatan_rem1, n.lampiran_link_rem1, n.lampiran_file_rem1); if(!n.dilihat_ortu_rem1) { htmlFeed += cardBase + `</div></div>`; stopRender = true; continue; } }
+                if(n.remedial_2 !== null && n.remedial_2 !== undefined) { cardBase += generateRow('REMEDIAL TAHAP 2', n.remedial_2, n.kktp, n.dilihat_ortu_rem2, n.feedback_rem2, n.waktu_dilihat_rem2, `feed_${n.id}_rem2`, 'rem2', n.catatan_rem2, n.lampiran_link_rem2, n.lampiran_file_rem2); if(!n.dilihat_ortu_rem2) { htmlFeed += cardBase + `</div></div>`; stopRender = true; continue; } }
+                if(n.remedial_3 !== null && n.remedial_3 !== undefined) { cardBase += generateRow('REMEDIAL TAHAP 3', n.remedial_3, n.kktp, n.dilihat_ortu_rem3, n.feedback_rem3, n.waktu_dilihat_rem3, `feed_${n.id}_rem3`, 'rem3', n.catatan_rem3, n.lampiran_link_rem3, n.lampiran_file_rem3); if(!n.dilihat_ortu_rem3) { htmlFeed += cardBase + `</div></div>`; stopRender = true; continue; } }
+                htmlFeed += cardBase + `</div></div>`;
+            }
+            if(semuaNilaiAktif.length === 0) { htmlFeed = `<div style="text-align:center; padding:60px 20px; background:white; border-radius:24px; border:1px dashed #cbd5e1;"><i class="fas fa-folder-open" style="font-size:40px; color:#e2e8f0; margin-bottom:15px;"></i><h3 style="color:#64748b; margin:0;">Belum Ada Nilai</h3><p style="color:#94a3b8; font-size:13px; margin-top:5px;">Belum ada rekaman nilai pada semester ini.</p></div>`; }
+            document.getElementById('wadahPemberitahuanAnak').innerHTML = htmlFeed;
+        }
 
     </script>
 </body>
