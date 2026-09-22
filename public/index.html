@@ -746,6 +746,22 @@
         </div>
     </div>
 
+    <!-- MODAL POP-UP RESPON ORANG TUA -->
+    <div id="modalResponOrtu" class="modal-overlay hidden">
+        <div class="modal-container" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:var(--text-dark); font-size:18px;"><i class="fas fa-comments" style="color:#10b981; margin-right:8px;"></i> Riwayat Respon Orang Tua</h3>
+                <button class="btn-close" onclick="tutupModalResponOrtu()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="background: #f8fafc;" id="kontenResponOrtu">
+                <!-- Konten dinamis -->
+            </div>
+            <div class="modal-footer">
+                <button onclick="tutupModalResponOrtu()" style="background:#64748b; padding:10px 20px;">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <!-- LOGIKA JAVASCRIPT -->
     <script>
         const masterDataMapel = ["Akidah Akhlak", "Alquran Hadis", "Bahasa Arab", "Bahasa Indonesia", "Bahasa Inggris", "Fikih", "Informatika", "IPA", "IPS", "Matematika", "Mulok", "Pendidikan Pancasila", "PJOK", "Prakarya", "Seni", "SKI"];
@@ -789,13 +805,11 @@
             const elgKelas = document.getElementById('gKelas'); if(elgKelas) elgKelas.innerHTML = '<option value="">-- Kelas --</option>' + sysKls.map(k=>`<option value="${k}">${k}</option>`).join('');
             const elgMapel = document.getElementById('gMapel'); if(elgMapel) elgMapel.innerHTML = '<option value="">-- Mata Pelajaran --</option>' + sysMpl.map(m=>`<option value="${m}">${m}</option>`).join('');
             
-            // Populating Filter Kelas untuk Admin di Halaman Data Guru
             const elFilterGuruAdmin = document.getElementById('filterKelasGuruAdmin');
             if(elFilterGuruAdmin) {
                 elFilterGuruAdmin.innerHTML = '<option value="SEMUA">-- Semua Kelas --</option>' + sysKls.map(k=>`<option value="${k}">${k}</option>`).join('');
             }
 
-            // Populating Filter Kelas untuk Halaman Data Siswa (Bisa diakses Admin & Guru)
             const elFilterSiswa = document.getElementById('filterKelasSiswa');
             if(elFilterSiswa) {
                 let optSiswa = '<option value="SEMUA">-- Semua Kelas --</option>';
@@ -809,7 +823,6 @@
                 elFilterSiswa.innerHTML = optSiswa;
             }
 
-            // Pilihan input kelas untuk modal Siswa
             const elsKelas = document.getElementById('sKelas');
             if(elsKelas) {
                 let optSiswa = '<option value="">-- Pilih Kelas --</option>';
@@ -1293,13 +1306,12 @@
 
             let theadHtml = `<tr><th>NISN</th><th>Nama Murid</th>`; 
             
-            // PERBAIKAN: Membuat header judul tabel bisa diklik
             urutanKeys.forEach(u => { 
                 let sampleRec = nData.find(n => n.urutan === u);
                 let top = sampleRec && sampleRec.topik ? sampleRec.topik : '';
                 let kk = sampleRec && sampleRec.kktp ? sampleRec.kktp : '';
                 let wak = sampleRec && sampleRec.waktu_pelaksanaan ? sampleRec.waktu_pelaksanaan : '';
-                let safeTopik = encodeURIComponent(top).replace(/'/g, "%27"); // Hindari error tanda kutip
+                let safeTopik = encodeURIComponent(top).replace(/'/g, "%27");
                 
                 let titleStr = fJenis.includes('Akhir') ? 'Nilai Akhir' : 'Ke-'+u;
                 theadHtml += `<th style="cursor:pointer; color:var(--accent);" title="Klik untuk cek/edit detail kolom" onclick="bukaModalEditKolom('${u}', '${safeTopik}', '${kk}', '${wak}')"><div style="display:flex; align-items:center; gap:6px; background:var(--bg-main); padding:6px 12px; border-radius:8px; border:1px solid #e2e8f0; justify-content:center; transition:0.3s;" onmouseover="this.style.background='var(--accent)'; this.style.color='white';" onmouseout="this.style.background='var(--bg-main)'; this.style.color='var(--accent)';">${titleStr} <i class="fas fa-pencil-alt" style="font-size:10px;"></i></div></th>`;
@@ -1317,8 +1329,15 @@
                         if(cell) {
                             let skorTertinggi = cell.remedial_3 !== null && cell.remedial_3 !== undefined ? cell.remedial_3 : (cell.remedial_2 !== null && cell.remedial_2 !== undefined ? cell.remedial_2 : (cell.remedial_1 !== null && cell.remedial_1 !== undefined ? cell.remedial_1 : cell.skor));
                             let color = cell.status_tuntas && cell.status_tuntas.includes('TUNTAS') && !cell.status_tuntas.includes('TIDAK') ? '#10b981' : '#ef4444';
-                            let notifRespon = ''; if(!cell.guru_sudah_baca && (cell.feedback_ortu || cell.feedback_rem1 || cell.feedback_rem2 || cell.feedback_rem3)) { notifRespon = `<span style="position:absolute; top:-5px; right:-5px; background:#ef4444; width:10px; height:10px; border-radius:50%;"></span>`; }
-                            tbodyHtml += `<td style="vertical-align:middle; position:relative; min-width:120px;"><div style="display:flex; justify-content:space-between; align-items:center; background:#f4f7fe; padding:8px 12px; border-radius:12px; border:1px solid #e2e8f0;"><div><b style="font-size:16px;">${skorTertinggi}</b><br><span style="font-size:9px; color:${color}; font-weight:bold;">${cell.status_tuntas||'-'}</span></div><button onclick="editNilaiGuru('${cell.id}')" style="background:var(--accent); color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; font-size:12px;" title="Edit & Remedial"><i class="fas fa-edit"></i></button></div>${notifRespon}</td>`;
+                            
+                            let hasRespon = cell.dilihat_ortu || cell.dilihat_ortu_rem1 || cell.dilihat_ortu_rem2 || cell.dilihat_ortu_rem3;
+                            let btnRespon = '';
+                            if(hasRespon) {
+                                let notifDot = !cell.guru_sudah_baca ? `<span style="position:absolute; top:-4px; right:-4px; background:#ef4444; width:10px; height:10px; border-radius:50%; border:2px solid white;"></span>` : '';
+                                btnRespon = `<div style="position:relative; margin-left:5px;"><button onclick="lihatResponOrtu('${cell.id}')" style="background:#10b981; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; font-size:12px;" title="Lihat Respon Orang Tua"><i class="fas fa-comment-dots"></i></button>${notifDot}</div>`;
+                            }
+
+                            tbodyHtml += `<td style="vertical-align:middle; min-width:120px;"><div style="display:flex; justify-content:space-between; align-items:center; background:#f4f7fe; padding:8px 12px; border-radius:12px; border:1px solid #e2e8f0;"><div><b style="font-size:16px;">${skorTertinggi}</b><br><span style="font-size:9px; color:${color}; font-weight:bold;">${cell.status_tuntas||'-'}</span></div><div style="display:flex; align-items:center;"><button onclick="editNilaiGuru('${cell.id}')" style="background:var(--accent); color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; font-size:12px;" title="Edit & Remedial"><i class="fas fa-edit"></i></button>${btnRespon}</div></div></td>`;
                         } else { tbodyHtml += `<td style="text-align:center; color:#cbd5e1; font-weight:bold;">-</td>`; }
                     }); tbodyHtml += `</tr>`;
                 });
@@ -1366,6 +1385,34 @@
                 if(result.success) { alert("Seluruh data pada kolom tersebut berhasil dihapus!"); tutupModalEditKolom(); muatKelolaNilai(); updateWidgets(userAktif); } else { alert(result.message); }
             } catch(e) { alert("Gagal koneksi ke server."); }
         }
+        // --------------------------------------------------
+
+        // --- FUNGSI LIHAT RESPON ORANG TUA ---
+        function lihatResponOrtu(id) {
+            const n = window.dataKelolaNilaiCache.find(x => x.id === id); if(!n) return;
+            let html = '';
+            const buatCardRespon = (tahap, waktu, respon) => {
+                if(!waktu) return '';
+                return `<div style="background:white; padding:15px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                            <h5 style="margin:0 0 10px; color:var(--accent); font-size:13px; text-transform:uppercase;">${tahap}</h5>
+                            <div style="font-size:12px; color:#64748b; margin-bottom:5px;"><i class="far fa-clock"></i> Dilihat/Merespon pada: <b>${waktu}</b></div>
+                            <div style="font-size:13px; color:var(--text-dark); background:#f4f7fe; padding:10px; border-radius:8px; font-style:italic;">"${respon || 'Hanya dibaca, tidak ada balasan'}"</div>
+                        </div>`;
+            };
+            html += buatCardRespon('Nilai Utama (Awal)', n.waktu_dilihat, n.feedback_ortu);
+            html += buatCardRespon('Remedial Tahap 1', n.waktu_dilihat_rem1, n.feedback_rem1);
+            html += buatCardRespon('Remedial Tahap 2', n.waktu_dilihat_rem2, n.feedback_rem2);
+            html += buatCardRespon('Remedial Tahap 3', n.waktu_dilihat_rem3, n.feedback_rem3);
+
+            if(html === '') html = '<div style="text-align:center; padding:20px; color:#94a3b8; font-style:italic;">Orang tua belum memberikan respon.</div>';
+            document.getElementById('kontenResponOrtu').innerHTML = html;
+            document.getElementById('modalResponOrtu').classList.remove('hidden');
+
+            if(!n.guru_sudah_baca) {
+                fetch('/api/guru/baca-notif', { method: 'PUT' }).then(() => { n.guru_sudah_baca = true; muatKelolaNilai(); document.getElementById('notifFeedback').classList.add('hidden'); });
+            }
+        }
+        function tutupModalResponOrtu() { document.getElementById('modalResponOrtu').classList.add('hidden'); }
         // --------------------------------------------------
 
         function editNilaiGuru(id) {
@@ -1517,8 +1564,26 @@
             document.getElementById('judulJenisLaporan').innerText = tipe === 'Keseluruhan' ? 'KESELURUHAN' : tipe.toUpperCase(); muatLaporanGlobal();
         }
 
-        function eksporExcel() { XLSX.writeFile(XLSX.utils.table_to_book(document.getElementById('tabelLaporan')), `Laporan_SIPENA_${tipeLaporanAktif}.xlsx`); }
-        function eksporPDF() { html2pdf().from(document.getElementById('areaCetakPDF')).save(`Laporan_SIPENA_${tipeLaporanAktif}.pdf`); }
+        // --- PERBAIKAN EXCEL: Menghapus teks TUNTAS/TIDAK TUNTAS, hanya ekspor angkanya saja ---
+        function eksporExcel() { 
+            const tabelClone = document.getElementById('tabelLaporan').cloneNode(true);
+            tabelClone.querySelectorAll('.excel-remove').forEach(el => el.remove());
+            XLSX.writeFile(XLSX.utils.table_to_book(tabelClone), `Laporan_SIPENA_${tipeLaporanAktif}.xlsx`); 
+        }
+
+        // --- PERBAIKAN PDF: Deteksi tabel lebar & ubah jadi Landscape otomatis ---
+        function eksporPDF() { 
+            const element = document.getElementById('areaCetakPDF');
+            const isWide = document.getElementById('tabelLaporan').scrollWidth > 800; // Jika tabel lebar, otomatis Landscape
+            const opt = {
+                margin:       0.4,
+                filename:     `Laporan_SIPENA_${tipeLaporanAktif}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: isWide ? 'landscape' : 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
         
         async function muatLaporanGlobal() {
             const res = await fetch('/api/nilai'); const hasil = await res.json();
@@ -1553,7 +1618,8 @@
                     tbodyHtml += `<tr><td><small style="color:#94a3b8;">${row.nisn}</small></td><td style="white-space:nowrap;"><b style="color:var(--text-dark);">${row.nama_siswa}</b></td><td><b>${row.kelas}</b></td><td><span style="background:var(--bg-main); color:var(--accent); padding:6px 12px; border-radius:8px; font-size:11px; font-weight:600; border:1px solid #e2e8f0;">${row.mapel}</span></td>`;
                     urutanKeys.forEach(col => {
                         let cell = row.scores[col];
-                        if (cell) { let color = cell.status && cell.status.includes('TUNTAS') && !cell.status.includes('TIDAK') ? '#10b981' : '#ef4444'; tbodyHtml += `<td><b style="font-size:16px;">${cell.skor}</b><br><span style="font-size:9px; color:${color}; font-weight:bold;">${cell.status||'-'}</span></td>`; } 
+                        // Menambahkan class "excel-remove" agar teks status/warna tidak ikut terdownload di Excel
+                        if (cell) { let color = cell.status && cell.status.includes('TUNTAS') && !cell.status.includes('TIDAK') ? '#10b981' : '#ef4444'; tbodyHtml += `<td><b style="font-size:16px;">${cell.skor}</b><br class="excel-remove"><span class="excel-remove" style="font-size:9px; color:${color}; font-weight:bold;">${cell.status||'-'}</span></td>`; } 
                         else { tbodyHtml += `<td><span style="color:#cbd5e1; font-weight:bold;">-</span></td>`; }
                     });
                     let avg = Math.round(row.total / row.count); let avgColor = avg >= 70 ? '#10b981' : '#ef4444'; tbodyHtml += `<td><b style="font-size:16px; color:${avgColor};">${avg}</b></td></tr>`;
