@@ -234,7 +234,8 @@
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Akademik Kelas</p>
                 <div class="menu-item active" onclick="bukaHalaman('adminDataSiswa', this)"><i class="fas fa-users"></i> Data Murid Kelas</div>
                 <div class="menu-item" onclick="bukaHalaman('guruInputNilai', this)"><i class="fas fa-edit"></i> Input Nilai Baru</div>
-                <div class="menu-item" onclick="bukaHalaman('guruKelolaNilai', this)"><i class="fas fa-tasks"></i> Kelola & Remedial <span id="notifFeedback" class="hidden badge badge-danger" style="margin:0 0 0 auto;"></span></div>
+                <!-- PERBAIKAN: Badge notif angka dihapus -->
+                <div class="menu-item" onclick="bukaHalaman('guruKelolaNilai', this)"><i class="fas fa-tasks"></i> Kelola & Remedial</div>
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 20px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Laporan</p>
                 <div class="menu-item" onclick="bukaHalaman('laporanRekap', this)"><i class="fas fa-file-invoice"></i> Laporan Kelas</div>
             </div>
@@ -592,7 +593,6 @@
                     <div id="areaCetakPDF" style="background: white; color: black; padding: 40px; border: 1px solid #e2e8f0; border-radius: 24px; overflow-x:auto; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
                         <div style="text-align: center; margin-bottom: 40px;"><h2 style="margin: 0 0 5px; font-weight: 700; font-size: 26px;">LAPORAN <span id="judulJenisLaporan">NILAI TUGAS HARIAN</span></h2><p style="margin: 0; color: #64748b; font-size: 15px;">SIPENA - TP <span id="lblTaCetak"></span> Semester <span id="lblSmtCetak"></span> <span id="lblFilterCetak" style="font-weight: bold; color: var(--accent);"></span></p></div>
                         
-                        <!-- Wrapper khusus tabel laporan untuk render PDF tanpa terpotong -->
                         <div id="wadahTabelLaporan" style="overflow-x: auto; width: 100%;">
                             <table id="tabelLaporan" style="font-size: 13px; width: 100%;"><thead></thead><tbody></tbody></table>
                         </div>
@@ -650,32 +650,10 @@
         let hapusFileUtama = false, hapusFileRem1 = false, hapusFileRem2 = false, hapusFileRem3 = false;
         let tempMengajarGuru = []; let dataSiswaInputAktif = []; 
         let tipeLaporanAktif = 'Tugas Harian'; let tipeLaporanOrtuAktif = 'Tugas Harian'; let ortuMapelAktif = "";
-        let notifInterval = null; 
         window.dataKelolaNilaiCache = [];
         window.laporanDataExport = []; 
         const curYear = new Date().getFullYear(); const startYear = 2026;
         document.querySelectorAll('.footer-teks').forEach(el => el.innerText = `© ${curYear > startYear ? startYear + '-' + curYear : startYear} [Muhammad Syafari Studio Project]. All Rights Reserved.`);
-
-        // --- SISTEM NOTIFIKASI REAL-TIME (DIPERBAIKI) ---
-        async function cekNotifRealtime(user) {
-            if (!document.getElementById('guruKelolaNilai').classList.contains('hidden')) return;
-            try {
-                // Menambahkan timestamp (?t=...) agar browser selalu mengambil data segar dari database, bukan dari cache
-                const resN = await fetch('/api/nilai?t=' + new Date().getTime()); 
-                const dN = await resN.json(); 
-                const daftarMapelAjar = user.mengajar.map(m => m.mapel);
-                const nilaiGuru = dN.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester && daftarMapelAjar.includes(n.mapel));
-                const countUnread = nilaiGuru.filter(n => n.guru_sudah_baca === false).length; 
-                const badge = document.getElementById('notifFeedback');
-                if(countUnread > 0) { 
-                    badge.innerText = countUnread; 
-                    badge.classList.remove('hidden'); 
-                } else { 
-                    badge.classList.add('hidden'); 
-                }
-            } catch(e) {}
-        }
-        // ------------------------------------
 
         async function editMaster(jenis, idx) {
             let oldVal = sysData[jenis][idx]; let newVal = prompt(`Edit nama ${jenis === 'kelas' ? 'Kelas' : 'Mata Pelajaran'}:`, oldVal);
@@ -920,8 +898,6 @@
             if (user.role === 'admin') { document.getElementById('menuAdmin').classList.remove('hidden'); switchSetting('setAkademik', document.querySelector('.btn-set-menu')); populateFiltersLaporanDanKelola(); bukaHalaman('pengaturanSistem'); } 
             else if (user.role === 'guru') { 
                 document.getElementById('menuGuru').classList.remove('hidden'); populateFiltersLaporanDanKelola(); bukaHalaman('guruKelolaNilai'); 
-                if(notifInterval) clearInterval(notifInterval);
-                notifInterval = setInterval(() => cekNotifRealtime(userAktif), 30000); 
             } 
             else { document.getElementById('menuOrtu').classList.remove('hidden'); bukaHalaman('ortuNilaiHarian'); }
             
@@ -941,18 +917,6 @@
                 const resS = await fetch('/api/siswa'); const dS = await resS.json();
                 const kelasUnik = [...new Set(user.mengajar.map(m => m.kelas))]; const totalSiswaGuru = dS.data.filter(s => kelasUnik.includes(s.kelas)).length;
                 kontenWidget = `<div class="widget-card wg-blue"><div class="widget-icon"><i class="fas fa-chalkboard"></i></div><div class="widget-info"><h4>Kelas Diampu</h4><h2>${kelasUnik.length}</h2></div></div><div class="widget-card wg-purple"><div class="widget-icon"><i class="fas fa-user-graduate"></i></div><div class="widget-info"><h4>Murid Diajar</h4><h2>${totalSiswaGuru}</h2></div></div><div class="widget-card wg-yellow"><div class="widget-icon"><i class="fas fa-book"></i></div><div class="widget-info"><h4>Mapel Diampu</h4><h2>${[...new Set(user.mengajar.map(m=>m.mapel))].length}</h2></div></div>`;
-                const resN = await fetch('/api/nilai?t=' + new Date().getTime()); const dN = await resN.json(); const daftarMapelAjar = user.mengajar.map(m => m.mapel);
-                const nilaiGuru = dN.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester && daftarMapelAjar.includes(n.mapel));
-                
-                const countUnread = nilaiGuru.filter(n => n.guru_sudah_baca === false).length; 
-                const badge = document.getElementById('notifFeedback');
-                const isKelolaAktif = !document.getElementById('guruKelolaNilai').classList.contains('hidden');
-                
-                if(countUnread > 0 && !isKelolaAktif) { 
-                    badge.innerText = countUnread; badge.classList.remove('hidden'); 
-                } else { 
-                    badge.classList.add('hidden'); 
-                }
             }
             wadah.innerHTML = bannerHTML + `<div class="widget-grid">${kontenWidget}</div>`;
         }
@@ -994,7 +958,6 @@
             if(idHalaman === 'ortuNilaiHarian') { muatRaporAnakFeed(); updateNotifOrtu(); } 
             if(idHalaman === 'ortuRekapTotal') { buildDropdownMapelOrtu(); updateNotifOrtu(); } 
             if(idHalaman === 'guruKelolaNilai') { 
-                document.getElementById('notifFeedback').classList.add('hidden'); 
                 fetch('/api/guru/baca-notif', { method: 'PUT' }).then(() => { muatKelolaNilai(); }); 
             }
         }
@@ -1210,6 +1173,7 @@
         }
 
         async function muatKelolaNilai() {
+            // Memasang timestamp untuk menghancurkan cache memori browser (Anti Notif Hantu)
             const res = await fetch('/api/nilai?t=' + new Date().getTime()); const hasil = await res.json();
             const fTa = document.getElementById('filterTaKelola').value; const fSmt = document.getElementById('filterSmtKelola').value; const fKelas = document.getElementById('filterKelolaKelas').value; const fMapel = document.getElementById('filterKelolaMapel').value; const fJenis = document.getElementById('filterKelolaJenis').value;
             if (!fKelas || fKelas === "SEMUA" || !fMapel || fMapel === "SEMUA") { document.querySelector('#tabelKelolaNilai thead').innerHTML = ''; document.querySelector('#tabelKelolaNilai tbody').innerHTML = '<tr><td style="text-align:center; padding:30px; color:#94a3b8;">Silakan pilih Kelas dan Mata Pelajaran terlebih dahulu.</td></tr>'; return; }
@@ -1263,6 +1227,7 @@
             document.querySelector('#tabelKelolaNilai thead').innerHTML = theadHtml; document.querySelector('#tabelKelolaNilai tbody').innerHTML = tbodyHtml;
         }
 
+        // --- FUNGSI BARU UNTUK EDIT/HAPUS KOLOM MASSAL ---
         function bukaModalEditKolom(urutan, topikEncoded, kktp, waktu) {
             const jenis = document.getElementById('filterKelolaJenis').value;
             document.getElementById('lblKolomEditName').innerText = jenis.includes('Akhir') ? jenis : `${jenis} Ke-${urutan}`;
@@ -1302,7 +1267,9 @@
                 if(result.success) { alert("Seluruh data pada kolom tersebut berhasil dihapus!"); tutupModalEditKolom(); muatKelolaNilai(); updateWidgets(userAktif); } else { alert(result.message); }
             } catch(e) { alert("Gagal koneksi ke server."); }
         }
+        // --------------------------------------------------
 
+        // --- FUNGSI LIHAT RESPON ORANG TUA ---
         function lihatResponOrtu(id) {
             const n = window.dataKelolaNilaiCache.find(x => x.id === id); if(!n) return;
             let html = '';
@@ -1324,10 +1291,11 @@
             document.getElementById('modalResponOrtu').classList.remove('hidden');
 
             if(!n.guru_sudah_baca) {
-                fetch('/api/guru/baca-notif', { method: 'PUT' }).then(() => { n.guru_sudah_baca = true; muatKelolaNilai(); document.getElementById('notifFeedback').classList.add('hidden'); });
+                fetch('/api/guru/baca-notif', { method: 'PUT' }).then(() => { n.guru_sudah_baca = true; muatKelolaNilai(); });
             }
         }
         function tutupModalResponOrtu() { document.getElementById('modalResponOrtu').classList.add('hidden'); }
+        // --------------------------------------------------
 
         function editNilaiGuru(id) {
             const n = window.dataKelolaNilaiCache.find(x => x.id === id); if(!n) return;
@@ -1555,6 +1523,7 @@
                 groupedData[key].scores[colKey] = { skor: skorFinal, status: n.status_tuntas }; groupedData[key].total += Number(skorFinal); groupedData[key].count += 1;
             });
 
+            // Menyiapkan Data Bersih Khusus Untuk Excel
             let exportDataArray = [];
             let excelHeader = ["NISN", "Nama Murid", "Kelas", "Mata Pelajaran"];
             urutanKeys.forEach(col => excelHeader.push(col));
@@ -1574,7 +1543,7 @@
                     urutanKeys.forEach(col => {
                         let cell = row.scores[col];
                         if (cell) { 
-                            excelRowData.push(cell.skor); 
+                            excelRowData.push(cell.skor); // Data Excel murni hanya angkanya saja
                             let color = cell.status && cell.status.includes('TUNTAS') && !cell.status.includes('TIDAK') ? '#10b981' : '#ef4444'; 
                             tbodyHtml += `<td><b style="font-size:16px;">${cell.skor}</b><br class="excel-remove"><span class="excel-remove" style="font-size:9px; color:${color}; font-weight:bold;">${cell.status||'-'}</span></td>`; 
                         } 
@@ -1585,13 +1554,13 @@
                     });
                     let avg = Math.round(row.total / row.count); 
                     excelRowData.push(avg); 
-                    exportDataArray.push(excelRowData); 
+                    exportDataArray.push(excelRowData); // Simpan baris bersih ke memory Excel
 
                     let avgColor = avg >= 70 ? '#10b981' : '#ef4444'; 
                     tbodyHtml += `<td><b style="font-size:16px; color:${avgColor};">${avg}</b></td></tr>`;
                 });
             }
-            window.laporanDataExport = exportDataArray; 
+            window.laporanDataExport = exportDataArray; // Menjadikan array Excel siap diakses tombol export
             document.querySelector('#tabelLaporan thead').innerHTML = theadHtml; document.querySelector('#tabelLaporan tbody').innerHTML = tbodyHtml;
 
             // GRAFIK ADMIN/GURU
