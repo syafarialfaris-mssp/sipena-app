@@ -183,7 +183,9 @@ app.post('/api/import-siswa', async (req, res) => {
 app.put('/api/siswa/:nisn', async (req, res) => { const up = await Siswa.findOneAndUpdate({ nisn: req.params.nisn }, req.body); if (up) res.json({ success: true, message: "Data Murid diupdate!" }); else res.json({ success: false, message: "Murid tidak ditemukan" }); });
 app.delete('/api/siswa/:nisn', async (req, res) => { await Siswa.findOneAndDelete({ nisn: req.params.nisn }); await Nilai.deleteMany({ nisn: req.params.nisn }); res.json({ success: true, message: "Data Murid dihapus permanen!" }); });
 
+// ==========================================
 // API PENGUMUMAN
+// ==========================================
 app.get('/api/pengumuman', async (req, res) => {
     const p = await Pengumuman.find().sort({ _id: -1 });
     res.json({ success: true, data: p });
@@ -196,6 +198,26 @@ app.post('/api/pengumuman', async (req, res) => {
     }
     await Pengumuman.create({ kelas, mapel, nama_guru, email_guru, isi_pesan, lampiran_file: urlLampiran, nama_file, waktu_kirim });
     res.json({ success: true, message: "Pengumuman berhasil dikirim!" });
+});
+// API Edit Pengumuman (Fitur Baru)
+app.put('/api/pengumuman/:id', async (req, res) => {
+    try {
+        const { isi_pesan, lampiran_file, nama_file, hapus_lampiran } = req.body;
+        let updateData = { isi_pesan };
+
+        if (hapus_lampiran) {
+            updateData.lampiran_file = null;
+            updateData.nama_file = "";
+        } else if (lampiran_file && lampiran_file.startsWith('data:')) {
+            updateData.lampiran_file = await uploadToCloudinary(lampiran_file, 'pengumuman');
+            updateData.nama_file = nama_file;
+        }
+        
+        await Pengumuman.findByIdAndUpdate(req.params.id, updateData);
+        res.json({ success: true, message: "Pengumuman diperbarui!" });
+    } catch (err) {
+        res.json({ success: false, message: err.message });
+    }
 });
 app.delete('/api/pengumuman/:id', async (req, res) => {
     await Pengumuman.findByIdAndDelete(req.params.id);
@@ -210,6 +232,9 @@ app.put('/api/pengumuman/baca', async (req, res) => {
     res.json({ success: true });
 });
 
+// ==========================================
+// API NILAI
+// ==========================================
 app.post('/api/input-nilai-bulk', async (req, res) => {
     const dataArray = req.body; const sys = await System.findOne(); const payload = [];
     for (let item of dataArray) {

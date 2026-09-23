@@ -44,7 +44,6 @@
         tbody tr td:first-child { border-radius: 16px 0 0 16px; }
         tbody tr td:last-child { border-radius: 0 16px 16px 0; }
         
-        /* Modal (Pop-up) Styles */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; display: flex; justify-content: center; align-items: center; animation: fadeIn 0.3s; }
         .modal-container { background: var(--card-bg); width: 90%; max-width: 700px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
         .modal-header { padding: 20px 30px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
@@ -154,7 +153,6 @@
 
             <div id="kontenTeksLogin">
                 <img id="imgLogoLembagaLogin" src="" style="max-height: 80px; max-width: 200px; object-fit: contain; margin-bottom: 25px; display: none; mix-blend-mode: multiply;">
-
                 <h1>SIPENA <br> <span style="font-size: 32px; font-weight:400;">Sistem Informasi Pelaporan Nilai Anak</span></h1>
                 <p>Platform modern dan terintegrasi untuk manajemen data akademik yang cepat, efisien, dan transparan.</p>
                 <ul class="feature-list">
@@ -235,11 +233,9 @@
             <div id="menuGuru" class="hidden">
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Akademik Kelas</p>
                 <div class="menu-item active" onclick="bukaHalaman('adminDataSiswa', this)"><i class="fas fa-users"></i> Data Murid Kelas</div>
-                
                 <div class="menu-item" onclick="bukaHalaman('guruPengumuman', this)"><i class="fas fa-bullhorn"></i> Pengumuman Kelas</div>
                 <div class="menu-item" onclick="bukaHalaman('guruInputNilai', this)"><i class="fas fa-edit"></i> Input Nilai Baru</div>
                 <div class="menu-item" onclick="bukaHalaman('guruKelolaNilai', this)"><i class="fas fa-tasks"></i> Kelola & Remedial</div>
-                
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 20px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Laporan</p>
                 <div class="menu-item" onclick="bukaHalaman('laporanRekap', this)"><i class="fas fa-file-invoice"></i> Laporan Kelas</div>
             </div>
@@ -247,7 +243,6 @@
             <!-- MENU ORTU -->
             <div id="menuOrtu" class="hidden">
                 <p style="font-size:11px; font-weight:700; color:inherit; opacity:0.5; margin: 10px 20px 5px; text-transform:uppercase; letter-spacing:1px;">Portal Anak</p>
-                
                 <div class="menu-item" onclick="bukaHalaman('ortuPengumuman', this)">
                     <i class="fas fa-bullhorn"></i> Pengumuman Kelas <span id="notifPengumumanOrtuBadge" class="hidden badge badge-danger" style="margin:0 0 0 auto;"></span>
                 </div>
@@ -425,6 +420,11 @@
                             <input type="text" id="setAdminPass">
                             <label><b>Nomor WhatsApp Layanan (Untuk Pendaftaran Ortu di Login):</b></label>
                             <div class="input-group"><i class="fab fa-whatsapp"></i><input type="text" id="setAdminWA" placeholder="Contoh: 6281234567890"></div>
+                            <label><b>Format Pesan (Template) WhatsApp Pendaftaran:</b></label>
+                            <textarea id="setAdminWATemplate" rows="6" placeholder="Masukkan format pendaftaran di sini..."></textarea>
+                            <div style="margin-top:20px; padding:15px; background:#fef2f2; border-radius:12px; border:1px solid #fecaca;">
+                                <p style="margin:0; font-size:12px; color:#b91c1c;"><i class="fas fa-exclamation-triangle"></i> <b>PERHATIAN PENTING:</b> Pastikan Anda menyimpan atau mencatat email dan password baru ini dengan baik. Jika hilang, Anda tidak dapat memulihkan akses ke halaman Sistem Admin!</p>
+                            </div>
                             <button onclick="simpanPengaturanSistem()" style="width: 100%; margin-top: 20px;"><i class="fas fa-save"></i> Simpan Pengaturan Sistem</button>
                         </div>
                     </div>
@@ -650,6 +650,28 @@
     
     <div id="modalResponOrtu" class="modal-overlay hidden"><div class="modal-container" style="max-width: 600px;"><div class="modal-header"><h3 style="margin:0; color:var(--text-dark); font-size:18px;"><i class="fas fa-comments" style="color:#10b981; margin-right:8px;"></i> Riwayat Respon Orang Tua</h3><button class="btn-close" onclick="tutupModalResponOrtu()"><i class="fas fa-times"></i></button></div><div class="modal-body" style="background: #f8fafc;" id="kontenResponOrtu"></div><div class="modal-footer"><button onclick="tutupModalResponOrtu()" style="background:#64748b; padding:10px 20px;">Tutup</button></div></div></div>
 
+    <!-- FITUR BARU: MODAL EDIT PENGUMUMAN -->
+    <div id="modalEditPengumuman" class="modal-overlay hidden">
+        <div class="modal-container" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 style="margin:0; color:var(--text-dark); font-size:18px;"><i class="fas fa-edit" style="color:var(--accent); margin-right:8px;"></i> Edit Pengumuman</h3>
+                <button class="btn-close" onclick="tutupEditPengumuman()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="background: #f8fafc;">
+                <label><b>Isi Pesan Pengumuman:</b></label>
+                <textarea id="edPesanPengumuman" rows="5" placeholder="Tuliskan pesan..." style="margin-bottom:15px;"></textarea>
+                
+                <label><b>Ganti/Tambah Lampiran (Opsional, Maks 2MB):</b></label>
+                <input type="file" id="edFilePengumuman" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="margin-bottom:10px;">
+                <div id="infoLampiranPengumuman" style="background:white; padding:10px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:10px;"></div>
+            </div>
+            <div class="modal-footer" style="justify-content: flex-end; gap:10px;">
+                <button onclick="tutupEditPengumuman()" style="background:#64748b; padding:10px 20px;">Batal</button>
+                <button id="btnSimpanEditPengumuman" onclick="simpanEditPengumuman()" class="btn-success" style="padding:10px 20px;"><i class="fas fa-check"></i> Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
     <!-- LOGIKA JAVASCRIPT LENGKAP -->
     <script>
         const masterDataMapel = ["Akidah Akhlak", "Alquran Hadis", "Bahasa Arab", "Bahasa Indonesia", "Bahasa Inggris", "Fikih", "Informatika", "IPA", "IPS", "Matematika", "Mulok", "Pendidikan Pancasila", "PJOK", "Prakarya", "Seni", "SKI"];
@@ -662,6 +684,8 @@
         let notifInterval = null; 
         window.dataKelolaNilaiCache = [];
         window.laporanDataExport = []; 
+        window.pengumumanCache = []; // FITUR BARU: Cache Pengumuman
+        
         const curYear = new Date().getFullYear(); const startYear = 2026;
         document.querySelectorAll('.footer-teks').forEach(el => el.innerText = `© ${curYear > startYear ? startYear + '-' + curYear : startYear} [Muhammad Syafari Studio Project]. All Rights Reserved.`);
 
@@ -888,7 +912,7 @@
             try {
                 const timestamp = new Date().getTime();
                 
-                // Cek Notif Nilai Baru
+                // PERBAIKAN TYPO: semuaiNilaiAktif -> semuaNilaiAktif
                 const resN = await fetch(`/api/nilai/${userAktif.nisn}?t=${timestamp}`); 
                 const hasilN = await resN.json();
                 let semuaNilaiAktif = hasilN.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester);
@@ -1001,7 +1025,7 @@
         }
 
         // ============================
-        // PENGUMUMAN GURU
+        // FITUR BARU: PENGUMUMAN GURU
         // ============================
         async function kirimPengumumanGuru() {
             const val = document.getElementById('pilihanKelasMapelPengumuman').value;
@@ -1051,6 +1075,7 @@
             const res = await fetch('/api/pengumuman?t=' + new Date().getTime());
             const hasil = await res.json();
             const data = hasil.data.filter(p => p.email_guru === userAktif.email);
+            window.pengumumanCache = data; // Menyimpan cache untuk fitur edit pengumuman
             
             let html = '';
             if(data.length === 0) {
@@ -1063,6 +1088,7 @@
                     }
                     html += `
                     <div style="background:white; padding:20px; border-radius:16px; margin-bottom:15px; border:1px solid #e2e8f0; box-shadow:0 4px 6px rgba(0,0,0,0.02); position:relative;">
+                        <button onclick="bukaEditPengumuman('${p._id}')" style="position:absolute; top:15px; right:45px; background:transparent; color:#f59e0b; border:none; padding:5px; cursor:pointer;" title="Edit Pengumuman"><i class="fas fa-edit"></i></button>
                         <button onclick="hapusPengumumanGuru('${p._id}')" style="position:absolute; top:15px; right:15px; background:transparent; color:#ef4444; border:none; padding:5px; cursor:pointer;" title="Hapus Pengumuman"><i class="fas fa-trash"></i></button>
                         <div style="font-size:11px; color:#94a3b8; margin-bottom:5px;"><i class="far fa-clock"></i> Dikirim: ${p.waktu_kirim}</div>
                         <h5 style="margin:0 0 10px; color:var(--accent); font-size:14px;"><i class="fas fa-users"></i> Kelas ${p.kelas} &nbsp;|&nbsp; <i class="fas fa-book"></i> Mapel: ${p.mapel}</h5>
@@ -1074,6 +1100,79 @@
             }
             document.getElementById('wadahRiwayatPengumumanGuru').innerHTML = html;
         }
+
+        // --- FUNGSI EDIT PENGUMUMAN ---
+        let editPengumumanId = null;
+        let flagHapusLampiranPengumuman = false;
+
+        function bukaEditPengumuman(id) {
+            const p = window.pengumumanCache.find(x => x._id === id);
+            if(!p) return;
+            editPengumumanId = id;
+            flagHapusLampiranPengumuman = false;
+            
+            document.getElementById('edPesanPengumuman').value = p.isi_pesan;
+            document.getElementById('edFilePengumuman').value = '';
+            
+            const infoContainer = document.getElementById('infoLampiranPengumuman');
+            if(p.lampiran_file) {
+                infoContainer.innerHTML = `<span style="color:#10b981; font-weight:600; font-size:12px;"><i class="fas fa-check-circle"></i> File: ${p.nama_file || 'Terlampir'}</span> &nbsp;|&nbsp; <a href="#" onclick="setHapusLampiranPengumuman(); return false;" style="color:#ef4444; text-decoration:none; font-size:12px;"><i class="fas fa-trash"></i> Hapus File</a>`;
+            } else {
+                infoContainer.innerHTML = `<span style="color:#94a3b8; font-style:italic; font-size:12px;">Tidak ada lampiran saat ini.</span>`;
+            }
+            
+            document.getElementById('modalEditPengumuman').classList.remove('hidden');
+        }
+
+        function tutupEditPengumuman() {
+            document.getElementById('modalEditPengumuman').classList.add('hidden');
+            editPengumumanId = null;
+        }
+
+        function setHapusLampiranPengumuman() {
+            flagHapusLampiranPengumuman = true;
+            document.getElementById('infoLampiranPengumuman').innerHTML = '<span style="color:#ef4444; font-weight:600; font-size:12px;"><i class="fas fa-times-circle"></i> File akan dihapus saat disimpan</span>';
+        }
+
+        async function simpanEditPengumuman() {
+            if(!editPengumumanId) return;
+            const teks = document.getElementById('edPesanPengumuman').value.trim();
+            const fileInput = document.getElementById('edFilePengumuman');
+            
+            if(!teks && flagHapusLampiranPengumuman && fileInput.files.length === 0) return alert("Pesan pengumuman tidak boleh benar-benar kosong!");
+            
+            let fileBase64 = null;
+            let namaFile = "";
+            
+            if (fileInput.files.length > 0) { 
+                const file = fileInput.files[0]; 
+                if (file.size > 2 * 1024 * 1024) return alert("Ukuran file maksimal 2MB!"); 
+                namaFile = file.name;
+                fileBase64 = await new Promise(res => { const reader = new FileReader(); reader.onload = e => res(e.target.result); reader.readAsDataURL(file); }); 
+            }
+
+            const payload = {
+                isi_pesan: teks,
+                lampiran_file: fileBase64,
+                nama_file: namaFile,
+                hapus_lampiran: flagHapusLampiranPengumuman
+            };
+
+            const btn = document.getElementById('btnSimpanEditPengumuman');
+            const oriTxt = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...'; btn.disabled = true;
+
+            try {
+                await fetch(`/api/pengumuman/${editPengumumanId}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+                alert("Pengumuman berhasil diperbarui!");
+                tutupEditPengumuman();
+                muatRiwayatPengumumanGuru();
+            } catch(e) {
+                alert("Gagal memperbarui pengumuman.");
+            } finally {
+                btn.innerHTML = oriTxt; btn.disabled = false;
+            }
+        }
         
         async function hapusPengumumanGuru(id) {
             if(confirm("Yakin ingin menghapus pengumuman ini?")) {
@@ -1083,7 +1182,7 @@
         }
 
         // ============================
-        // PENGUMUMAN ORTU
+        // FITUR BARU: PENGUMUMAN ORTU
         // ============================
         async function muatPengumumanOrtu() {
             document.getElementById('lblKelasOrtuPengumuman').innerText = userAktif.kelas;
@@ -1124,6 +1223,7 @@
             }
             document.getElementById('wadahListPengumumanOrtu').innerHTML = html;
             
+            // Tandai sudah dibaca di database
             if(unreadIds.length > 0) {
                 await fetch('/api/pengumuman/baca', { 
                     method: 'PUT', 
@@ -1135,7 +1235,7 @@
         }
 
         // ============================
-        // MODAL GURU LOGIC
+        // MODAL GURU LOGIC (EXISTING)
         // ============================
         function bukaModalGuru() { 
             document.getElementById('modalGuru').classList.remove('hidden');
@@ -1386,7 +1486,8 @@
                             let hasRespon = cell.dilihat_ortu || cell.dilihat_ortu_rem1 || cell.dilihat_ortu_rem2 || cell.dilihat_ortu_rem3;
                             let btnRespon = '';
                             if(hasRespon) {
-                                btnRespon = `<div style="position:relative; margin-left:5px;"><button onclick="lihatResponOrtu('${cell.id}')" style="background:#10b981; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; font-size:12px;" title="Lihat Respon Orang Tua"><i class="fas fa-comment-dots"></i></button></div>`;
+                                let notifDot = !cell.guru_sudah_baca ? `<span style="position:absolute; top:-4px; right:-4px; background:#ef4444; width:10px; height:10px; border-radius:50%; border:2px solid white;"></span>` : '';
+                                btnRespon = `<div style="position:relative; margin-left:5px;"><button onclick="lihatResponOrtu('${cell.id}')" style="background:#10b981; color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; font-size:12px;" title="Lihat Respon Orang Tua"><i class="fas fa-comment-dots"></i></button>${notifDot}</div>`;
                             }
 
                             tbodyHtml += `<td style="vertical-align:middle; min-width:120px;"><div style="display:flex; justify-content:space-between; align-items:center; background:#f4f7fe; padding:8px 12px; border-radius:12px; border:1px solid #e2e8f0;"><div><b style="font-size:16px;">${skorTertinggi}</b><br><span style="font-size:9px; color:${color}; font-weight:bold;">${cell.status_tuntas||'-'}</span></div><div style="display:flex; align-items:center;"><button onclick="editNilaiGuru('${cell.id}')" style="background:var(--accent); color:white; border:none; padding:8px; border-radius:10px; cursor:pointer; font-size:12px;" title="Edit & Remedial"><i class="fas fa-edit"></i></button>${btnRespon}</div></div></td>`;
@@ -1651,89 +1752,6 @@
             let gradient = ctx.createLinearGradient(0, 0, 0, 400); gradient.addColorStop(0, 'rgba(67, 24, 255, 0.6)'); gradient.addColorStop(1, 'rgba(67, 24, 255, 0.05)');
             window.grafikAdmin = new Chart(ctx, { type: 'line', data: { labels: chartLabels.length > 0 ? chartLabels : ['Belum Ada Data'], datasets: [{ label: chartLabelText, data: chartData.map(num => Math.round(num * 10) / 10), borderColor: '#4318ff', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4, pointBackgroundColor: pointColors, pointBorderColor: '#ffffff', pointBorderWidth: 2, pointRadius: 6, pointHoverRadius: 8 }] }, options: { responsive: true, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: true, position: 'top' } } } });
         }
-
-        function gantiTabOrtu(tipe) {
-            tipeLaporanOrtuAktif = tipe; document.querySelectorAll('#ortuRekapTotal .tab-btn-lap').forEach(btn => { btn.style.background = '#f1f5f9'; btn.style.color = '#64748b'; });
-            const activeBtn = document.getElementById('tabOrtu' + tipe.replace(/\s/g, '')); if(activeBtn) { activeBtn.style.background = 'var(--accent)'; activeBtn.style.color = 'white'; }
-            if(ortuMapelAktif) { renderTabelMapelOrtu(ortuMapelAktif, tipe); }
-        }
-
-        async function buildDropdownMapelOrtu() {
-            document.getElementById('wadahRekapAnakListMapel').innerHTML = ''; const resG = await fetch('/api/guru'); const dataGuru = await resG.json();
-            let mapelKelasIni = new Set(); dataGuru.data.forEach(guru => { if(guru.mengajar) { guru.mengajar.forEach(m => { if(m.kelas === userAktif.kelas) { mapelKelasIni.add(m.mapel); } }); } });
-            let sortedMapel = Array.from(mapelKelasIni).sort(); const sel = document.getElementById('ortuPilihMapel');
-
-            if(sortedMapel.length === 0) {
-                sel.innerHTML = '<option value="">Belum ada mapel didaftarkan</option>'; document.getElementById('wadahTombolTabOrtu').style.display = 'none';
-                document.getElementById('wadahRekapAnakListMapel').innerHTML = `<div style="text-align:center; padding:50px 20px; background:white; border-radius:24px; border:1px dashed #cbd5e1;"><i class="fas fa-book" style="font-size:40px; color:#e2e8f0; margin-bottom:15px;"></i><h3 style="color:#64748b; margin:0;">Belum Ada Mata Pelajaran</h3><p style="color:#94a3b8; font-size:13px; margin-top:5px;">Admin belum mendaftarkan guru untuk kelas ini.</p></div>`;
-                if(window.grafikOrtu) window.grafikOrtu.destroy(); updateWidgetsOrtuKosong(); return;
-            }
-            document.getElementById('wadahTombolTabOrtu').style.display = 'flex'; let opts = ''; sortedMapel.forEach(m => { opts += `<option value="${m}">${m}</option>`; }); sel.innerHTML = opts;
-            ortuMapelAktif = sel.value; gantiTabOrtu('Tugas Harian'); 
-        }
-
-        async function renderTabelMapelOrtu(namaMapel, tipe) {
-            updateWidgetOrtuByMapel(namaMapel);
-            const res = await fetch(`/api/nilai/${userAktif.nisn}?t=` + new Date().getTime()); const hasil = await res.json();
-            let nilaiAktif = hasil.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester && n.mapel === namaMapel && n.dilihat_ortu === true);
-            
-            if(tipe !== 'Keseluruhan') { if(tipe === 'Akhir Semester') nilaiAktif = nilaiAktif.filter(n => n.jenis.includes('Akhir')); else nilaiAktif = nilaiAktif.filter(n => n.jenis === tipe); }
-            nilaiAktif.sort((a,b) => a.id - b.id); let wadahTabel = document.getElementById('wadahRekapAnakListMapel');
-            
-            if(nilaiAktif.length === 0) { wadahTabel.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8; font-size:13px; font-style:italic; background:white; border-radius:24px; border:1px solid #e2e8f0;">Belum ada data nilai yang dipublish untuk mapel dan kategori ini.</div>`; if(window.grafikOrtu) window.grafikOrtu.destroy(); return; }
-
-            let htmlTabel = `<div style="overflow-x:auto; background:transparent;"><table style="font-size: 13px; margin:0;"><thead><tr><th>Tanggal Input</th><th>Penilaian</th><th>Topik</th><th>Skor Akhir</th><th>KKTP</th><th>Status</th></tr></thead><tbody>`;
-            nilaiAktif.forEach(n => {
-                let skorFinal = n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : (n.remedial_2 !== null && n.remedial_2 !== undefined ? n.remedial_2 : (n.remedial_1 !== null && n.remedial_1 !== undefined ? n.remedial_1 : n.skor));
-                let colorStatus = n.status_tuntas && n.status_tuntas.includes('TUNTAS') && !n.status_tuntas.includes('TIDAK') ? '#10b981' : '#ef4444';
-                htmlTabel += `<tr><td>${n.tanggal_input || '-'}</td><td><span style="background:var(--bg-main); padding:6px 12px; border-radius:8px; font-size:11px; font-weight:600;">${n.jenis} ${n.urutan!=='-'?'Ke-'+n.urutan:''}</span></td><td>${n.topik || '-'}</td><td><b style="font-size:15px;">${skorFinal}</b></td><td>${n.kktp || '-'}</td><td style="color:${colorStatus}; font-weight:bold;">${n.status_tuntas || '-'}</td></tr>`;
-            }); htmlTabel += `</tbody></table></div>`; wadahTabel.innerHTML = htmlTabel;
-
-            const ctx = document.getElementById('grafikAnak').getContext('2d'); if(window.grafikOrtu) window.grafikOrtu.destroy();
-            let gradient = ctx.createLinearGradient(0, 0, 0, 400); gradient.addColorStop(0, 'rgba(16, 185, 129, 0.5)'); gradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
-            const skorData = nilaiAktif.map(n => Number(n.remedial_3 !== null && n.remedial_3 !== undefined ? n.remedial_3 : (n.remedial_2 !== null && n.remedial_2 !== undefined ? n.remedial_2 : (n.remedial_1 !== null && n.remedial_1 !== undefined ? n.remedial_1 : n.skor))));
-            const kktpData = nilaiAktif.map(n => n.kktp || 70); const ptColors = skorData.map((skor, i) => skor >= kktpData[i] ? '#10b981' : '#ef4444'); 
-
-            window.grafikOrtu = new Chart(ctx, { type: 'line', data: { labels: nilaiAktif.map(n => `${n.jenis} ${n.urutan!=='-'?'Ke-'+n.urutan:''}`), datasets: [{ label: `Skor Akhir: ${namaMapel}`, data: skorData, borderColor: '#10b981', backgroundColor: gradient, borderWidth: 3, fill: true, tension: 0.4, pointBackgroundColor: ptColors, pointBorderColor: '#ffffff', pointBorderWidth: 2, pointRadius: 6, pointHoverRadius: 8 }] }, options: { responsive: true, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } } });
-        }
-
-        async function muatRaporAnakFeed() {
-            const res = await fetch(`/api/nilai/${userAktif.nisn}?t=` + new Date().getTime()); const hasil = await res.json();
-            let semuaNilaiAktif = hasil.data.filter(n => n.tahunAjaran === sysData.tahunAjaran && n.semester === sysData.semester);
-            semuaNilaiAktif.sort((a,b) => b.id.localeCompare(a.id)); 
-
-            let htmlFeed = ''; let stopRender = false;
-            for (let i = 0; i < semuaNilaiAktif.length; i++) {
-                if(stopRender) break; const n = semuaNilaiAktif[i]; let tglLaksana = n.waktu_pelaksanaan ? ` | Pelaksanaan: ${n.waktu_pelaksanaan}` : '';
-                let cardBase = `<div style="background: white; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border-radius: 24px; border: 1px solid #f1f5f9; position:relative; overflow:hidden;"><div style="position:absolute; left:0; top:0; bottom:0; width:8px; background:var(--accent);"></div><div style="float: right; text-align:right;"><span style="font-size: 11px; color: #94a3b8;"><i class="fas fa-calendar-alt"></i> Diinput: ${n.tanggal_input || '-'}</span></div><h4 style="margin:0 0 8px; color: var(--accent); font-size:16px;">${n.mapel} - ${n.jenis} ${n.urutan!=='-' ? 'Ke-'+n.urutan : ''}</h4><p style="margin:0 0 15px; font-size:13px; color:#475569;"><i class="fas fa-bookmark" style="color:#cbd5e1; margin-right:5px;"></i> Topik: <b>${n.topik || '-'}</b> ${n.kktp ? ` &nbsp;|&nbsp; <i class="fas fa-bullseye" style="color:#cbd5e1; margin-right:5px;"></i> KKTP: <b>${n.kktp}</b>` : ''} ${tglLaksana}</p><hr style="border:none; border-top:1px dashed #e2e8f0; margin: 15px 0;"><h5 style="margin:0 0 15px; color:#64748b; font-size:12px; text-transform:uppercase;">Riwayat Penilaian & Remedial:</h5><div style="display:flex; flex-direction:column; gap:15px;">`;
-
-                const generateRow = (label, skor, kktp, isSeen, feedback, waktu, formId, tahap, catGuru, linkGuru, fileGuru) => {
-                    let stat = kktp ? (skor >= kktp ? 'TUNTAS' : 'TIDAK TUNTAS') : '-'; let col = stat === 'TUNTAS' ? '#10b981' : (stat === 'TIDAK TUNTAS' ? '#ef4444' : '#64748b');
-                    let lampiranHtml = '';
-                    if(linkGuru || fileGuru) {
-                        lampiranHtml += `<div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">`;
-                        if(linkGuru) { let properLink = linkGuru.startsWith('http') ? linkGuru : 'https://' + linkGuru; lampiranHtml += `<a href="${properLink}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding:8px 14px; border-radius:10px; text-decoration:none; font-size:11px; font-weight:600;"><i class="fas fa-link"></i> Tautan Referensi</a>`; }
-                        if(fileGuru) { lampiranHtml += `<a href="${fileGuru}" download="Lampiran_SIPENA_${tahap}" target="_blank" style="background:#dcfce7; color:#16a34a; padding:8px 14px; border-radius:10px; text-decoration:none; font-size:11px; font-weight:600;"><i class="fas fa-download"></i> Lihat/Unduh File</a>`; }
-                        lampiranHtml += `</div>`;
-                    }
-                    let rowHtml = `<div style="background:#f4f7fe; border:none; border-radius:16px; padding:20px; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:15px;"><div style="flex:1; min-width:200px;"><div style="font-size:12px; color:#64748b; font-weight:600; margin-bottom:6px;">${label}</div><div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;"><span style="font-size:32px; font-weight:bold; color:var(--text-dark); line-height:1;">${skor}</span><span style="font-size:11px; font-weight:700; color:${col}; background:${col}15; padding:6px 12px; border-radius:8px;">${stat}</span></div>${catGuru ? `<div style="padding:10px; background:white; border-left:4px solid #cbd5e1; font-style:italic; font-size:12px; color:#475569; border-radius:8px;">Catatan Guru: "${catGuru}"</div>` : ''}${lampiranHtml}</div><div style="flex:1; min-width:200px; text-align:right;">`;
-                    if(!isSeen) { rowHtml += `<div style="display:flex; flex-direction:column; gap:8px;"><div style="font-size:11px; color:#b91c1c; font-weight:600;"><i class="fas fa-exclamation-circle"></i> Berikan respon untuk membuka nilai selanjutnya</div><div style="display:flex; gap:5px;"><input type="text" id="${formId}" placeholder="Tulis tanggapan / terima kasih..." style="margin:0; padding:12px; font-size:12px; flex:1; box-sizing:border-box;"><button onclick="kirimFeedback('${n.id}', '${tahap}')" style="padding:12px 18px; font-size:12px;"><i class="fas fa-paper-plane"></i></button></div></div>`; } 
-                    else { rowHtml += `<div style="font-size:12px; color:#10b981; font-weight:600; margin-bottom:6px;"><i class="fas fa-check-circle"></i> Selesai Dilihat & Direspon</div><div style="font-size:12px; color:#64748b; font-style:italic;">"${feedback}"</div><div style="font-size:10px; color:#94a3b8; margin-top:6px;">${waktu}</div>`; }
-                    rowHtml += `</div></div>`; return rowHtml;
-                };
-
-                cardBase += generateRow('NILAI UTAMA (AWAL)', n.skor, n.kktp, n.dilihat_ortu, n.feedback_ortu, n.waktu_dilihat, `feed_${n.id}_utama`, 'utama', n.catatan, n.lampiran_link, n.lampiran_file);
-                if(!n.dilihat_ortu) { htmlFeed += cardBase + `</div></div>`; stopRender = true; continue; }
-
-                if(n.remedial_1 !== null && n.remedial_1 !== undefined) { cardBase += generateRow('REMEDIAL TAHAP 1', n.remedial_1, n.kktp, n.dilihat_ortu_rem1, n.feedback_rem1, n.waktu_dilihat_rem1, `feed_${n.id}_rem1`, 'rem1', n.catatan_rem1, n.lampiran_link_rem1, n.lampiran_file_rem1); if(!n.dilihat_ortu_rem1) { htmlFeed += cardBase + `</div></div>`; stopRender = true; continue; } }
-                if(n.remedial_2 !== null && n.remedial_2 !== undefined) { cardBase += generateRow('REMEDIAL TAHAP 2', n.remedial_2, n.kktp, n.dilihat_ortu_rem2, n.feedback_rem2, n.waktu_dilihat_rem2, `feed_${n.id}_rem2`, 'rem2', n.catatan_rem2, n.lampiran_link_rem2, n.lampiran_file_rem2); if(!n.dilihat_ortu_rem2) { htmlFeed += cardBase + `</div></div>`; stopRender = true; continue; } }
-                if(n.remedial_3 !== null && n.remedial_3 !== undefined) { cardBase += generateRow('REMEDIAL TAHAP 3', n.remedial_3, n.kktp, n.dilihat_ortu_rem3, n.feedback_rem3, n.waktu_dilihat_rem3, `feed_${n.id}_rem3`, 'rem3', n.catatan_rem3, n.lampiran_link_rem3, n.lampiran_file_rem3); if(!n.dilihat_ortu_rem3) { htmlFeed += cardBase + `</div></div>`; stopRender = true; continue; } }
-                htmlFeed += cardBase + `</div></div>`;
-            }
-            if(semuaNilaiAktif.length === 0) { htmlFeed = `<div style="text-align:center; padding:60px 20px; background:white; border-radius:24px; border:1px dashed #cbd5e1;"><i class="fas fa-folder-open" style="font-size:40px; color:#e2e8f0; margin-bottom:15px;"></i><h3 style="color:#64748b; margin:0;">Belum Ada Nilai</h3><p style="color:#94a3b8; font-size:13px; margin-top:5px;">Belum ada rekaman nilai pada semester ini.</p></div>`; }
-            document.getElementById('wadahPemberitahuanAnak').innerHTML = htmlFeed;
-        }
-
     </script>
 </body>
 </html>
